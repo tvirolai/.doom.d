@@ -29,11 +29,20 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory "~/Dropbox/org/")
+
+;; Web mode fontification seems to slow down insertions unbearably, so it's
+;; disabled for now.
+(setq web-mode-skip-fontification t)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
+
+(add-hook 'json-mode-hook
+          (lambda ()
+            (make-local-variable 'js-indent-level)
+            (setq js-indent-level 4)))
 
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
@@ -75,8 +84,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key input-decode-map (kbd "C-n") (kbd "C-x C-f"))
   (define-key input-decode-map (kbd "C-M-<left>") (kbd "C-x <left>"))
   (define-key input-decode-map (kbd "C-M-<right>") (kbd "C-x <right>")))
-
-(evil-set-initial-state 'term-mode 'emacs)
 
 (defun setup-global-keys ()
   (define-key evil-normal-state-map (kbd "C-M-b") 'ibuffer)
@@ -120,7 +127,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (paredit-mode 1)
   (subword-mode 1)
-  (aggressive-indent-mode 1)
+  ;; (aggressive-indent-mode 1)
   (flycheck-mode 1)
   (clojure-mappings))
 
