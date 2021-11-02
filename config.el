@@ -7,7 +7,7 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Tuomo Virolainen"
-      user-mail-address "tuomo.virolainen@kapsi.fi")
+      user-mail-address "tuomo.virolainen@siili.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -127,7 +127,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (paredit-mode 1)
   (subword-mode 1)
-  ;; (aggressive-indent-mode 1)
   (flycheck-mode 1)
   (clojure-mappings))
 
@@ -140,6 +139,125 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
 ;;   (setq flycheck-checkers (cons checker (delq checker flycheck-checkers))))
 
+;; TypeScript etc.
+
+(defun eslint-fix-file ()
+  (interactive)
+  (message "eslint --fix the file" (buffer-file-name))
+  (call-process-shell-command
+   (concat "yarn eslint --fix " (buffer-file-name))
+   nil "*Shell Command Output*" t)
+  (revert-buffer t t))
+
+;; EWW
+
+(defun eww-mappings ()
+  (evil-local-set-key 'normal (kbd "M-h") 'eww-back-url)
+  (evil-local-set-key 'normal (kbd "M-l") 'eww-forward-url))
+
+(add-hook 'eww-mode-hook #'eww-mappings)
+(add-hook 'eww-mode-hook #'visual-line-mode)
+
+;; Common Lisp settings
+
+(defun clisp-mappings ()
+  (evil-local-set-key 'normal (kbd "°") 'slime-eval-buffer)
+  (evil-local-set-key 'normal (kbd "M-§") 'slime-eval-buffer)
+  (evil-local-set-key 'normal (kbd "§") 'slime-eval-defun)
+  (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
+
+;; (add-hook 'lisp-mode-hook #'linum-mode)
+(add-hook 'lisp-mode-hook #'paredit-mode)
+(add-hook 'lisp-mode-hook #'flycheck-mode)
+(add-hook 'lisp-mode-hook #'clisp-mappings)
+
+;; Emacs Lisp settings
+
+(defun elisp-mappings ()
+  (evil-local-set-key 'normal (kbd "°") 'eval-buffer)
+  (evil-local-set-key 'normal (kbd "M-§") 'eval-buffer)
+  (evil-local-set-key 'normal (kbd "§") 'eval-defun)
+  (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
+
+(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+(add-hook 'emacs-lisp-mode-hook #'elisp-mappings)
+
+;;; esc quits
+
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactivate-mark  t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
+(define-key evil-normal-state-map [escape] 'keyboard-quit)
+(define-key evil-visual-state-map [escape] 'keyboard-quit)
+(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+
+(defun org-mode-remaps ()
+  ;; Remap org-mode meta keys for convenience
+  (mapcar (lambda (state)
+            (evil-declare-key state org-mode-map
+              (kbd "M-l") 'org-metaright
+              (kbd "M-h") 'org-metaleft
+              (kbd "M-k") 'org-metaup
+              (kbd "M-j") 'org-metadown
+              (kbd "M-L") 'org-shiftmetaright
+              (kbd "M-H") 'org-shiftmetaleft
+              (kbd "M-K") 'org-shiftmetaup
+              (kbd "M-J") 'org-shiftmetadown))
+          '(normal insert)))
+
+(add-hook 'org-mode-hook #'(lambda ()
+                             ;; make the lines in the buffer wrap around the edges of the screen.
+                             ;; to press C-c q  or fill-paragraph ever again!
+                             (visual-line-mode)
+                             (org-mode-remaps)
+                             (org-indent-mode)))
+
+(global-set-key (kbd "C-c c") 'org-capture)
+
+;;
+
+(defun kill-magit-diff-buffer-in-current-repo (&rest _)
+  "Delete the magit-diff buffer related to the current repo."
+  (let ((magit-diff-buffer-in-current-repo
+         (magit-mode-get-buffer 'magit-diff-mode)))
+    (kill-buffer magit-diff-buffer-in-current-repo)))
+;;
+;; When 'C-c C-c' is pressed in the magit commit message buffer,
+;; delete the magit-diff buffer related to the current repo.
+;;
+(add-hook 'git-commit-setup-hook
+          (lambda ()
+            (add-hook 'with-editor-post-finish-hook
+                      #'kill-magit-diff-buffer-in-current-repo
+                      nil t)))
+
+(with-eval-after-load 'magit
+  (defun mu-magit-kill-buffers ()
+    "Restore window configuration and kill all Magit buffers."
+    (interactive)
+    (let ((buffers (magit-mode-get-buffers)))
+      (magit-restore-window-configuration)
+      (mapc #'kill-buffer buffers)))
+
+  (bind-key "q" #'mu-magit-kill-buffers magit-status-mode-map))
+
+;; Treat Emacs symbol as word in Evil mode
+
+(with-eval-after-load 'evil
+  (defalias #'forward-evil-word #'forward-evil-symbol)
+  ;; make evil-search-word look for symbol rather than word boundaries
+  (setq-default evil-symbol-word-search t))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
