@@ -142,6 +142,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; TypeScript etc.
 
 (defun eslint-fix-file ()
+  "Run the buffer through eslint --fix."
   (interactive)
   (message "eslint --fix the file" (buffer-file-name))
   (call-process-shell-command
