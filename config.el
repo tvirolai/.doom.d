@@ -133,6 +133,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (clojure-mappings))
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
+(add-hook 'cider-repl-mode-hook #'paredit-mode)
 
 (setq mac-option-modifier nil
       mac-command-modifier 'meta
