@@ -31,6 +31,10 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
 
+(setq mac-option-modifier nil
+      mac-command-modifier 'meta
+      select-enable-clipboard t)
+
 ;; Web mode fontification seems to slow down insertions unbearably, so it's
 ;; disabled for now.
 (setq web-mode-skip-fontification t)
@@ -39,11 +43,6 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
-;; (add-hook 'json-mode-hook
-;;           (lambda ()
-;;             (make-local-variable 'js-indent-level)
-;;             (setq js-indent-level 4)))
-;;
 (setq org-roam-directory "~/Dropbox/org/roam")
 
 (defun minibuffer-keyboard-quit ()
@@ -135,14 +134,26 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
-(setq mac-option-modifier nil
-      mac-command-modifier 'meta
-      select-enable-clipboard t)
+(add-hook 'clojure-mode-hook 'lsp)
+(add-hook 'clojurescript-mode-hook 'lsp)
+(add-hook 'clojurec-mode-hook 'lsp)
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-minimum-prefix-length 1
+      lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
+      lsp-signature-auto-activate nil
+      ; lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
+      ; lsp-enable-completion-at-point nil ; uncomment to use cider completion instead of lsp
+      )
 
 ;; (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
 ;;   (setq flycheck-checkers (cons checker (delq checker flycheck-checkers))))
 
 ;; TypeScript etc.
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
 
 (defun eslint-fix-file ()
   "Run the buffer through eslint --fix."
