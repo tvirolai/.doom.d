@@ -22,8 +22,8 @@
 ;; (setq doom-font "SF Mono-13")
 ;; (setq doom-font "SF Mono-13"
 ;;      doom-variable-pitch-font "Input Mono-12")
-(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Input Mono" :size 12 :weight 'regular))
+(setq doom-font (font-spec :family "SF Mono" :size 14 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Fira Code" :size 13 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -139,19 +139,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
 
-(add-hook 'clojure-mode-hook 'lsp)
-(add-hook 'clojurescript-mode-hook 'lsp)
-(add-hook 'clojurec-mode-hook 'lsp)
+;;(add-hook 'clojure-mode-hook 'lsp)
+;;(add-hook 'clojurescript-mode-hook 'lsp)
 
-(setq gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 1024 1024)
-      treemacs-space-between-root-nodes nil
-      company-minimum-prefix-length 1
-      lsp-lens-enable t ; Show the "1 references" etc text above definitions.
-      lsp-signature-auto-activate nil
-      ; lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
-      ; lsp-enable-completion-at-point nil ; uncomment to use cider completion instead of lsp
-      )
+;; (setq gc-cons-threshold (* 100 1024 1024)
+;;       read-process-output-max (* 1024 1024)
+;;       treemacs-space-between-root-nodes nil
+;;       company-minimum-prefix-length 1
+;;       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
+;;       lsp-signature-auto-activate nil
+;;       lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
+;;       ; lsp-enable-completion-at-point nil ; uncomment to use cider completion instead of lsp
+;;       )
 
 ;; (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
 ;;   (setq flycheck-checkers (cons checker (delq checker flycheck-checkers))))
