@@ -36,6 +36,8 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
 
+(plist-put org-calc-default-modes 'calc-float-format '(fix 2))
+
 (setq mac-option-modifier nil
       mac-command-modifier 'meta
       select-enable-clipboard t)
