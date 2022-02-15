@@ -36,8 +36,6 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
 
-(plist-put org-calc-default-modes 'calc-float-format '(fix 2))
-
 (setq mac-option-modifier nil
       mac-command-modifier 'meta
       select-enable-clipboard t)
@@ -156,6 +154,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
 ;;   (setq flycheck-checkers (cons checker (delq checker flycheck-checkers))))
+;;
+(add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
 
 ;; TypeScript etc.
 
