@@ -52,6 +52,19 @@
 
 (setq org-roam-completion-everywhere t)
 
+(setq history-length 25)
+
+(savehist-mode 1)
+
+;; Remember and restore the last cursor location of opened files
+(save-place-mode 1)
+
+;; Revert buffers when the underlying file has changed
+(global-auto-revert-mode 1)
+
+;; Revert Dired and other buffers
+(setq global-auto-revert-non-file-buffers t)
+
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
 In Delete Selection mode, if the mark is active, just deactivate it;
