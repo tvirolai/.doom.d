@@ -21,9 +21,9 @@
 ;; font string. You generally only need these two:
 ;; (setq doom-font "SF Mono-13")
 ;; (setq doom-font "SF Mono-13"
-;;      doom-variable-pitch-font "Input Mono-12")
-(setq doom-font (font-spec :family "SF Mono" :size 14 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Fira Code" :size 13 :weight 'regular))
+;;      doom-variable-pitch-font "Input Mono-12
+(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
