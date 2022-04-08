@@ -48,4 +48,7 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
+(package! graphviz-dot-mode)
+(package! presentation)
 (package! sparql-mode)
+(package! ob-restclient)

@@ -118,7 +118,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (evil-local-set-key 'normal (kbd "Ö") 'cider-find-var)
   (evil-local-set-key 'normal (kbd "q") 'cider-popup-buffer-quit)
   (evil-local-set-key 'normal (kbd "K") 'cider-doc)
-  (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
+  (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp)
+  (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp))
 
 (defun cider-custom-test-ns-fn (ns)
   "Recognize namespaces (NS) with suffix -spec or -test as test namespaces."
@@ -129,6 +130,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (setq cider-test-infer-test-ns #'cider-custom-test-ns-fn)
 
+(defun initialize-kondo ()
+  (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
+    (setq flycheck-checkers (cons checker (delq checker flycheck-checkers)))))
+
 (defun my-clojure-mode-hook ()
   (clj-refactor-mode 1)
   (yas-minor-mode 1)        ; for adding require/use/import statements
@@ -137,7 +142,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (paredit-mode 1)
   (subword-mode 1)
   (flycheck-mode 1)
-  (clojure-mappings))
+  (clojure-mappings)
+  (initialize-kondo))
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 (add-hook 'cider-repl-mode-hook #'paredit-mode)
@@ -155,9 +161,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       ; lsp-enable-completion-at-point nil ; uncomment to use cider completion instead of lsp
       )
 
-;; (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
-;;   (setq flycheck-checkers (cons checker (delq checker flycheck-checkers))))
-;;
 (add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
 
 ;; TypeScript etc.
@@ -177,7 +180,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (defun eww-mappings ()
   (evil-local-set-key 'normal (kbd "M-h") 'eww-back-url)
-  (evil-local-set-key 'normal (kbd "M-l") 'eww-forward-url))
+  (evil-local-set-key 'normal (kbd "M-l") )'eww-forward-url)
 
 (add-hook 'eww-mode-hook #'eww-mappings)
 (add-hook 'eww-mode-hook #'visual-line-mode)
@@ -188,6 +191,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (evil-local-set-key 'normal (kbd "°") 'slime-eval-buffer)
   (evil-local-set-key 'normal (kbd "M-§") 'slime-eval-buffer)
   (evil-local-set-key 'normal (kbd "§") 'slime-eval-defun)
+  (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
   (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
 
 ;; (add-hook 'lisp-mode-hook #'linum-mode)
@@ -201,6 +205,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (evil-local-set-key 'normal (kbd "°") 'eval-buffer)
   (evil-local-set-key 'normal (kbd "M-§") 'eval-buffer)
   (evil-local-set-key 'normal (kbd "§") 'eval-defun)
+  (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
   (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
 
 (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
@@ -213,6 +218,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "§") 'restclient-http-send-current))
 
 (add-hook 'restclient-mode-hook 'restclient-mappings)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((restclient . t)))
 
 
 ;;; esc quits
