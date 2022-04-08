@@ -21,9 +21,9 @@
 ;; font string. You generally only need these two:
 ;; (setq doom-font "SF Mono-13")
 ;; (setq doom-font "SF Mono-13"
-;;      doom-variable-pitch-font "Input Mono-12")
-(setq doom-font (font-spec :family "SF Mono" :size 14 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Fira Code" :size 13 :weight 'regular))
+;;      doom-variable-pitch-font "Input Mono-12
+(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -51,6 +51,19 @@
 (setq org-roam-directory "~/Dropbox/org/roam")
 
 (setq org-roam-completion-everywhere t)
+
+(setq history-length 25)
+
+(savehist-mode 1)
+
+;; Remember and restore the last cursor location of opened files
+(save-place-mode 1)
+
+;; Revert buffers when the underlying file has changed
+(global-auto-revert-mode 1)
+
+;; Revert Dired and other buffers
+(setq global-auto-revert-non-file-buffers t)
 
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
