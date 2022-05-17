@@ -258,17 +258,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (defun org-mode-remaps ()
   ;; Remap org-mode meta keys for convenience
-  (mapcar (lambda (state)
-            (evil-declare-key state org-mode-map
-              (kbd "M-l") 'org-metaright
-              (kbd "M-h") 'org-metaleft
-              (kbd "M-k") 'org-metaup
-              (kbd "M-j") 'org-metadown
-              (kbd "M-L") 'org-shiftmetaright
-              (kbd "M-H") 'org-shiftmetaleft
-              (kbd "M-K") 'org-shiftmetaup
-              (kbd "M-J") 'org-shiftmetadown))
-          '(normal insert)))
+  (evil-declare-key '(normal insert) org-mode-map
+    (kbd "M-l") 'org-metaright
+    (kbd "M-h") 'org-metaleft
+    (kbd "M-k") 'org-metaup
+    (kbd "M-j") 'org-metadown
+    (kbd "M-L") 'org-shiftmetaright
+    (kbd "M-H") 'org-shiftmetaleft
+    (kbd "M-K") 'org-shiftmetaup
+    (kbd "M-J") 'org-shiftmetadown))
 
 (add-hook 'org-mode-hook #'(lambda ()
                              ;; make the lines in the buffer wrap around the edges of the screen.
@@ -285,6 +283,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
 (with-eval-after-load 'org-journal
+  (setq org-journal-date-prefix "#+TITLE: ")
+  (setq org-journal-file-format "%Y-%m-%d.org")
+  (setq org-journal-enable-agenda-integration t)
   (setq org-journal-carryover-items
         "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""))
 

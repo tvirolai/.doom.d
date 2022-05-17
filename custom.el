@@ -18,6 +18,8 @@
  '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
  '(objed-cursor-color "#ff6c6b")
+ '(org-agenda-files
+   '("/Users/tuomo.virolainen/Dropbox/org/basso.org" "/Users/tuomo.virolainen/Dropbox/org/kirjat2022.org" "/Users/tuomo.virolainen/Dropbox/org/pyörä.org" "/Users/tuomo.virolainen/Dropbox/org/talo.org" "/Users/tuomo.virolainen/Dropbox/org/tavoitteet2022.org" "/Users/tuomo.virolainen/Dropbox/org/vartijantupa.org"))
  '(package-selected-packages
    '(graphviz-dot-mode exec-path-from-shell lsp-treemacs wgrep sqlformat slack typescript-mode cider))
  '(pdf-view-midnight-colors (cons "#bbc2cf" "#282c34"))
