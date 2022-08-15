@@ -289,6 +289,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq org-journal-carryover-items
         "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""))
 
+(setq org-startup-folded 'nofold)
+
 ;; SOURCE: https://christiantietze.de/posts/2021/02/emacs-org-todo-doing-done-checkbox-cycling/
 (defun org-todo-if-needed (state)
   "Change header state to STATE unless the current item is in STATE already."
