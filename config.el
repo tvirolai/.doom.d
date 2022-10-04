@@ -28,7 +28,10 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-material)
+;; (setq doom-theme 'doom-dracula)
+;; (setq doom-theme 'doom-gruvbox)
+;; (setq doom-theme 'doom-fairy-floss)
 
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
 
@@ -171,7 +174,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
       lsp-signature-auto-activate nil
       lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
-      ; lsp-enable-completion-at-point nil ; uncomment to use cider completion instead of lsp
+      lsp-completion-enable nil ; uncomment to use cider completion instead of lsp
       )
 
 (add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
@@ -286,8 +289,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq org-journal-date-prefix "#+TITLE: ")
   (setq org-journal-file-format "%Y-%m-%d.org")
   (setq org-journal-enable-agenda-integration t)
-  (setq org-journal-carryover-items
-        "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""))
+  (setq org-journal-carryover-items "-TODO=\"DONE\"")
+  ;; (setq org-journal-carryover-items
+  ;;       "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\"")
+  )
 
 (setq org-startup-folded 'nofold)
 
