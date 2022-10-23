@@ -47,6 +47,8 @@
 ;; disabled for now.
 (setq web-mode-skip-fontification t)
 
+(setq-hook! 'web-mode-hook +format-with 'prettier-prettify)
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
@@ -192,6 +194,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    nil "*Shell Command Output*" t)
   (revert-buffer t t))
 
+(add-hook 'json-mode-hook
+          (lambda ()
+            (make-local-variable 'js-indent-level)
+            (setq js-indent-level 2)))
+
 ;; EWW
 
 (defun eww-mappings ()
@@ -239,6 +246,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
  'org-babel-load-languages
  '((restclient . t)))
 
+;; https://github.com/doomemacs/doomemacs/issues/6073
+(after! restclient (require 'gnutls))
 
 ;;; esc quits
 
@@ -289,10 +298,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq org-journal-date-prefix "#+TITLE: ")
   (setq org-journal-file-format "%Y-%m-%d.org")
   (setq org-journal-enable-agenda-integration t)
-  (setq org-journal-carryover-items "-TODO=\"DONE\"")
-  ;; (setq org-journal-carryover-items
-  ;;       "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\"")
-  )
+  (setq org-journal-carryover-items
+        "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""))
 
 (setq org-startup-folded 'nofold)
 
