@@ -28,8 +28,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-material)
-;; (setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-dracula)
+;; (setq doom-theme 'doom-material)
 ;; (setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-fairy-floss)
 
@@ -113,7 +113,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key input-decode-map (kbd "C-M-<right>") (kbd "C-x <right>")))
 
 (defun setup-global-keys ()
-  (define-key evil-normal-state-map (kbd "C-M-b") 'ibuffer)
+  (define-key evil-normal-state-map (kbd "C-M--") 'ibuffer)
   (global-set-key (kbd "M-<right>") 'forward-word)
   (global-set-key (kbd "M-<left>") 'backward-word)
   (global-set-key (kbd "C-<tab>") #'switch-to-prev-buffer)
@@ -128,6 +128,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setup-input-decode-map)
 
 ;; Clojure settings
+
+(global-company-mode)
 
 (defun clojure-mappings ()
   (evil-local-set-key 'normal (kbd "°") 'cider-eval-buffer)
