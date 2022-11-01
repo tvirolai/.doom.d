@@ -213,16 +213,29 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Common Lisp settings
 
 (defun clisp-mappings ()
-  (evil-local-set-key 'normal (kbd "°") 'slime-eval-buffer)
-  (evil-local-set-key 'normal (kbd "M-§") 'slime-eval-buffer)
-  (evil-local-set-key 'normal (kbd "§") 'slime-eval-defun)
+  (evil-local-set-key 'normal (kbd "°") 'sly-compile-defun)
+  (evil-local-set-key 'normal (kbd "M-§") 'sly-compile-file)
+  (evil-local-set-key 'normal (kbd "§") 'sly-compile-defun)
   (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
   (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
 
-;; (add-hook 'lisp-mode-hook #'linum-mode)
+(use-package! slime
+  :defer t ; don't load the package immediately
+  :init ; runs this immediately
+  (setq inferior-lisp-program "sbcl")
+  :config ; runs this when slime loads
+  (set-repl-handler! 'lisp-mode #'sly-mrepl)
+  (set-eval-handler! 'lisp-mode #'sly-eval-region)
+  (set-lookup-handlers! 'lisp-mode
+    :definition #'sly-edit-definition
+    :documentation #'sly-describe-symbol))
+
+(add-hook 'lisp-mode-hook #'rainbow-delimiters-mode)
 (add-hook 'lisp-mode-hook #'paredit-mode)
 (add-hook 'lisp-mode-hook #'flycheck-mode)
 (add-hook 'lisp-mode-hook #'clisp-mappings)
+
+;; (add-hook 'lisp-mode-hook #'linum-mode)
 
 ;; Emacs Lisp settings
 
