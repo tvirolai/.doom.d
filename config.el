@@ -39,8 +39,9 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
 
-(setq mac-option-modifier nil
+(setq mac-option-modifier 'super
       mac-command-modifier 'meta
+      mac-function-modifier 'hyper
       select-enable-clipboard t)
 
 ;; Web mode fontification seems to slow down insertions unbearably, so it's
@@ -181,6 +182,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       lsp-completion-enable nil ; uncomment to use cider completion instead of lsp
       )
 
+;; Suppress the 'starting look process' message from ispell:
+;; https://github.com/company-mode/company-mode/issues/912
+(advice-add 'ispell-lookup-words :around
+            (lambda (orig &rest args)
+              (shut-up (apply orig args))))
+
 (add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
 
 ;; TypeScript etc.
@@ -213,7 +220,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Common Lisp settings
 
 (defun clisp-mappings ()
-  (evil-local-set-key 'normal (kbd "°") 'sly-compile-defun)
+  (evil-local-set-key 'normal (kbd "°") 'sly-compile-file)
   (evil-local-set-key 'normal (kbd "M-§") 'sly-compile-file)
   (evil-local-set-key 'normal (kbd "§") 'sly-compile-defun)
   (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)

@@ -52,3 +52,4 @@
 (package! presentation)
 (package! sparql-mode)
 (package! ob-restclient)
+(unpin! clj-refactor)
