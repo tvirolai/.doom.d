@@ -26,7 +26,7 @@
        ivy               ; a search engine for love and life
 
        :ui
-       ;;deft              ; notational velocity for Emacs
+       ;; deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
@@ -35,7 +35,7 @@
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        ;;hydra
        indent-guides     ; highlighted indent columns
-       ;;ligatures         ; ligatures and symbols to make your code pretty again
+       ;; ligatures         ; ligatures and symbols to make your code pretty again
        minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
@@ -74,9 +74,9 @@
 
        :term
        eshell            ; the elisp shell that works everywhere
-       ;;shell             ; simple shell REPL for Emacs
+       shell             ; simple shell REPL for Emacs
        term              ; basic terminal emulator for Emacs
-       ;; vterm             ; the best terminal emulation in Emacs
+       vterm             ; the best terminal emulation in Emacs
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
@@ -118,7 +118,7 @@
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
-       ;;data              ; config/data formats
+       data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
@@ -147,7 +147,7 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +roam2 +pretty +journal)     ; organize your plain life in plain text
+       (org +roam2 +pretty +journal +present) ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -172,7 +172,7 @@
 
        :email
        ;;(mu4e +gmail)
-       ;;notmuch
+       notmuch
        ;;(wanderlust +gmail)
 
        :app

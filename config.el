@@ -39,9 +39,9 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
 
-(setq mac-option-modifier 'super
+(setq mac-option-modifier 'nil
       mac-command-modifier 'meta
-      mac-function-modifier 'hyper
+      mac-function-modifier 'super
       select-enable-clipboard t)
 
 ;; Web mode fontification seems to slow down insertions unbearably, so it's
@@ -101,7 +101,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "C-ä") #'split-window-right)
   (define-key evil-normal-state-map (kbd "ö") #'save-buffer)
   (define-key evil-normal-state-map (kbd "Ä") #'projectile-ag)
-  (define-key evil-normal-state-map (kbd "¨") #'evil-search-forward)
+  (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
   (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window))
 
 (defun setup-input-decode-map ()
@@ -319,11 +319,21 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (with-eval-after-load 'org-journal
   (setq org-journal-date-prefix "#+TITLE: ")
   (setq org-journal-file-format "%Y-%m-%d.org")
+  (setq org-journal-date-format "%a, %Y-%m-%d")
   (setq org-journal-enable-agenda-integration t)
   (setq org-journal-carryover-items
         "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""))
 
 (setq org-startup-folded 'nofold)
+
+(add-hook 'sql-mode-hook 'sql-indent-enable)
+
+;; Capitalize keywords in SQL mode
+(add-hook 'sql-mode-hook 'sqlup-mode)
+;; Capitalize keywords in an interactive session (e.g. psql)
+(add-hook 'sql-interactive-mode-hook 'sqlup-mode)
+;; Set a global keyword to use sqlup on a region
+(global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
 
 ;; SOURCE: https://christiantietze.de/posts/2021/02/emacs-org-todo-doing-done-checkbox-cycling/
 (defun org-todo-if-needed (state)

@@ -53,3 +53,5 @@
 (package! sparql-mode)
 (package! ob-restclient)
 (unpin! clj-refactor)
+(package! sql-indent)
+(package! sqlup-mode)
