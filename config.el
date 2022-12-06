@@ -19,11 +19,10 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-;; (setq doom-font "SF Mono-13")
-;; (setq doom-font "SF Mono-13"
-;;      doom-variable-pitch-font "Input Mono-12
+;; (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
+;;       doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 12 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -44,11 +43,42 @@
       mac-function-modifier 'super
       select-enable-clipboard t)
 
+(use-package! tree-sitter
+   :hook (prog-mode . turn-on-tree-sitter-mode)
+   :hook (tree-sitter-after-on . tree-sitter-hl-mode)
+   :config
+   (require 'tree-sitter-langs)
+   ;; This makes every node a link to a section of code
+   (setq tree-sitter-debug-jump-buttons t
+         ;; and this highlights the entire sub tree in your code
+         tree-sitter-debug-highlight-jump-region t))
+
+;; https://merrick.luois.me/posts/better-tsx-support-in-doom-emacs
+(use-package! typescript-mode
+  :mode ("\\.tsx\\'" . typescript-tsx-tree-sitter-mode)
+  :config
+  (setq typescript-indent-level 2)
+
+  (define-derived-mode typescript-tsx-tree-sitter-mode typescript-mode "TypeScript TSX"
+    (setq-local indent-line-function 'rjsx-indent-line))
+
+  (add-hook! 'typescript-tsx-tree-sitter-mode-local-vars-hook
+             #'+javascript-init-lsp-or-tide-maybe-h
+             #'rjsx-minor-mode)
+  (map! :map typescript-tsx-tree-sitter-mode-map
+        "<" 'rjsx-electric-lt
+        ">" 'rjsx-electric-gt))
+
+(after! tree-sitter
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-tree-sitter-mode . tsx)))
+
 ;; Web mode fontification seems to slow down insertions unbearably, so it's
 ;; disabled for now.
-(setq web-mode-skip-fontification t)
+;; (setq web-mode-skip-fontification t)
 
-(setq-hook! 'web-mode-hook +format-with 'prettier-prettify)
+;; (setq-hook! 'web-mode-hook +format-with 'prettier-prettify)
+
+(setq font-lock-maximum-decoration nil)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -57,6 +87,14 @@
 (setq org-roam-directory "~/Dropbox/org/roam")
 
 (setq org-roam-completion-everywhere t)
+
+(after! org-roam
+  (setq org-roam-capture-templates
+        `(("n" "default note" plain "%?"
+           :if-new
+           (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: ${title}\n#+date: %t\n#+filetags: \n\n ")
+           :unnarrowed t))))
 
 (setq history-length 25)
 
@@ -179,7 +217,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
       lsp-signature-auto-activate nil
       lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
-      lsp-completion-enable nil ; uncomment to use cider completion instead of lsp
+      lsp-completion-enable t ; uncomment to use cider completion instead of lsp
       )
 
 ;; Suppress the 'starting look process' message from ispell:
@@ -384,10 +422,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                         (t
                          (org-todo-if-needed "DOING")))
                 (org-todo-if-needed "DOING"))))))))
+
 (add-hook 'org-checkbox-statistics-hook #'ct/org-summary-checkbox-cookie)
-
-
-;;
 
 (defun kill-magit-diff-buffer-in-current-repo (&rest _)
   "Delete the magit-diff buffer related to the current repo."

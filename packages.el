@@ -55,3 +55,5 @@
 (unpin! clj-refactor)
 (package! sql-indent)
 (package! sqlup-mode)
+(package! tree-sitter)
+(package! tree-sitter-langs)
