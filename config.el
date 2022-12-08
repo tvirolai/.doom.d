@@ -72,14 +72,6 @@
 (after! tree-sitter
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-tree-sitter-mode . tsx)))
 
-;; Web mode fontification seems to slow down insertions unbearably, so it's
-;; disabled for now.
-;; (setq web-mode-skip-fontification t)
-
-;; (setq-hook! 'web-mode-hook +format-with 'prettier-prettify)
-
-(setq font-lock-maximum-decoration nil)
-
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
