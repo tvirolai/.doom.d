@@ -147,8 +147,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "C-M--") 'ibuffer)
   (global-set-key (kbd "M-<right>") 'forward-word)
   (global-set-key (kbd "M-<left>") 'backward-word)
-  (global-set-key (kbd "C-<tab>") #'switch-to-prev-buffer)
-  (global-set-key (kbd "<backtab>") #'switch-to-next-buffer)
   (global-set-key (kbd "´") 'kill-buffer)
   (global-set-key (kbd "C-M-ä") 'kill-buffer-and-window)
   (global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
@@ -240,11 +238,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; EWW
 
-(defun eww-mappings ()
-  (evil-local-set-key 'normal (kbd "M-h") 'eww-back-url)
-  (evil-local-set-key 'normal (kbd "M-l") )'eww-forward-url)
-
-(add-hook 'eww-mode-hook #'eww-mappings)
 (add-hook 'eww-mode-hook #'visual-line-mode)
 
 ;; Common Lisp settings
@@ -357,6 +350,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq org-startup-folded 'nofold)
 
 (add-hook 'sql-mode-hook 'sql-indent-enable)
+
+(setq sql-postgres-login-params nil)
+
+;; Separate work laptop -specific connection configurations to a separate file.
+(let ((sql-config-file "./sql-connections.el"))
+  (when (file-exists-p sql-config-file)
+    (load-file sql-config-file)))
 
 ;; Capitalize keywords in SQL mode
 (add-hook 'sql-mode-hook 'sqlup-mode)
