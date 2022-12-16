@@ -27,9 +27,9 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-dracula)
+;; (setq doom-theme 'doom-dracula)
 ;; (setq doom-theme 'doom-material)
-;; (setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-fairy-floss)
 
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
@@ -416,6 +416,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                 (org-todo-if-needed "DOING"))))))))
 
 (add-hook 'org-checkbox-statistics-hook #'ct/org-summary-checkbox-cookie)
+
+(use-package prettier
+  :hook ((typescript-mode . prettier-mode)
+         (js-mode . prettier-mode)
+         (web-mode . prettier-mode)
+         (json-mode . prettier-mode)
+         (yaml-mode . prettier-mode)
+         (ruby-mode . prettier-mode)))
 
 (defun kill-magit-diff-buffer-in-current-repo (&rest _)
   "Delete the magit-diff buffer related to the current repo."
