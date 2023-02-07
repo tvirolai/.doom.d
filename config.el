@@ -34,6 +34,8 @@
 
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
 
+(add-to-list 'exec-path "/opt/homebrew/bin")
+
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
@@ -204,6 +206,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
       company-minimum-prefix-length 1
+      cider-font-lock-dynamically nil
+      cider-repl-buffer-size-limit 100
       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
       lsp-signature-auto-activate nil
       lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
@@ -356,7 +360,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Separate work laptop -specific connection configurations to a separate file.
 (let ((sql-config-file "./sql-connections.el"))
   (when (file-exists-p sql-config-file)
-    (load-file sql-config-file)))
+    (load! sql-config-file)))
 
 ;; Capitalize keywords in SQL mode
 (add-hook 'sql-mode-hook 'sqlup-mode)

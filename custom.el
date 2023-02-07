@@ -20,9 +20,9 @@
  '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
  '(objed-cursor-color "#ff6c6b")
  '(org-agenda-files
-   '("/Users/tuomo.virolainen/Dropbox/org/pyörä.org" "/Users/tuomo.virolainen/Dropbox/org/talo.org" "/Users/tuomo.virolainen/Dropbox/org/vartijantupa.org" "/Users/tuomo.virolainen/Dropbox/org/journal/2022-12-08.org" "/Users/tuomo.virolainen/Library/CloudStorage/Dropbox/org/journal/2022-12-15.org"))
+   '("/Users/tuomo.virolainen/Dropbox/org/pyörä.org" "/Users/tuomo.virolainen/Dropbox/org/talo.org" "/Users/tuomo.virolainen/Dropbox/org/vartijantupa.org" "/Users/tuomo.virolainen/Dropbox/org/journal/2022-12-08.org" "/Users/tuomo.virolainen/Library/CloudStorage/Dropbox/org/journal/2023-01-26.org"))
  '(package-selected-packages
-   '(sql-indent graphviz-dot-mode exec-path-from-shell lsp-treemacs wgrep sqlformat slack typescript-mode cider))
+   '(prettier sql-indent graphviz-dot-mode exec-path-from-shell lsp-treemacs wgrep sqlformat slack typescript-mode cider))
  '(pdf-view-midnight-colors (cons "#bbc2cf" "#282c34"))
  '(rustic-ansi-faces
    ["#282c34" "#ff6c6b" "#98be65" "#ECBE7B" "#51afef" "#c678dd" "#46D9FF" "#bbc2cf"])

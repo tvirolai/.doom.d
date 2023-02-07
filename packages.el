@@ -57,3 +57,5 @@
 (package! sqlup-mode)
 (package! tree-sitter)
 (package! tree-sitter-langs)
+(package! prettier)
+(package! jet)
