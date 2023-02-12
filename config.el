@@ -29,8 +29,8 @@
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-dracula)
 ;; (setq doom-theme 'doom-material)
-(setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-fairy-floss)
+(setq doom-theme 'doom-gruvbox)
 
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
 
