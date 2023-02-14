@@ -425,9 +425,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :hook ((typescript-mode . prettier-mode)
          (js-mode . prettier-mode)
          (web-mode . prettier-mode)
-         (json-mode . prettier-mode)
-         (yaml-mode . prettier-mode)
-         (ruby-mode . prettier-mode)))
+         ;; (json-mode . prettier-mode)
+         (yaml-mode . prettier-mode)))
 
 (defun kill-magit-diff-buffer-in-current-repo (&rest _)
   "Delete the magit-diff buffer related to the current repo."
