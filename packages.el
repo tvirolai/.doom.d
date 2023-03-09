@@ -59,3 +59,4 @@
 (package! tree-sitter-langs)
 (package! prettier)
 (package! jet)
+(package! git-link)
