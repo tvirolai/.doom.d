@@ -196,8 +196,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (clojure-mappings)
   (initialize-kondo))
 
+(defun my-cider-repl-mode-hook ()
+  (paredit-mode 1)
+  (evil-local-set-key 'insert (kbd "C-<return>") 'paredit-RET)
+  (evil-local-set-key 'insert (kbd "RET") 'cider-repl-closing-return))
+
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
-(add-hook 'cider-repl-mode-hook #'paredit-mode)
+(add-hook 'cider-repl-mode-hook #'my-cider-repl-mode-hook)
 
 (add-hook 'clojure-mode-hook 'lsp)
 (add-hook 'clojurescript-mode-hook 'lsp)
