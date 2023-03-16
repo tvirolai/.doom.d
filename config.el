@@ -162,6 +162,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (global-company-mode)
 
+(setq cider-repl-buffer-size-limit 2000)
+
 (defun clojure-mappings ()
   (evil-local-set-key 'normal (kbd "°") 'cider-eval-buffer)
   (evil-local-set-key 'normal (kbd "M-§") 'cider-eval-buffer)
