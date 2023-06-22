@@ -60,3 +60,6 @@
 (package! prettier)
 (package! jet)
 (package! git-link)
+(package! aggressive-indent)
+(package! chatgpt
+  :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))

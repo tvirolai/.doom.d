@@ -36,6 +36,13 @@
 
 (add-to-list 'exec-path "/opt/homebrew/bin")
 
+;; Separate work laptop -specific connection configurations to a separate file.
+(let ((sql-config-file "~/.doom.d/sql-connections.el"))
+  (print "Looking for a configuration file...")
+  (when (file-exists-p sql-config-file)
+    (print "Configuration file found! Loading...")
+    (load! sql-config-file)))
+
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
@@ -162,8 +169,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (global-company-mode)
 
-(setq cider-repl-buffer-size-limit 2000)
-
 (defun clojure-mappings ()
   (evil-local-set-key 'normal (kbd "°") 'cider-eval-buffer)
   (evil-local-set-key 'normal (kbd "M-§") 'cider-eval-buffer)
@@ -189,6 +194,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (defun my-clojure-mode-hook ()
   (clj-refactor-mode 1)
+  (aggressive-indent-mode 1)
   (yas-minor-mode 1)        ; for adding require/use/import statements
   ;; This choice of keybinding leaves cider-macroexpand-1 unbound
   (cljr-add-keybindings-with-prefix "C-c C-m")
@@ -201,7 +207,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun my-cider-repl-mode-hook ()
   (paredit-mode 1)
   (evil-local-set-key 'insert (kbd "C-<return>") 'paredit-RET)
-  (evil-local-set-key 'insert (kbd "RET") 'cider-repl-closing-return))
+  (evil-local-set-key 'insert (kbd "RET") 'cider-repl-closing-return)
+  (setq cider-repl-buffer-size-limit 20000))
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 (add-hook 'cider-repl-mode-hook #'my-cider-repl-mode-hook)
@@ -229,6 +236,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
 
+;; Make indentation word right with Compojure Api definitions
+;; (lsp indentation can handle them out of the box).
+(with-eval-after-load 'cider
+  (define-clojure-indent
+    (POST 2)
+    (GET 2)
+    (PATCH 2)
+    (PUT 2)))
+
 ;; TypeScript etc.
 
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
@@ -249,7 +265,35 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; EWW
 
+;; Disable images
+;; (setq shr-inhibit-images t)
+(setq shr-use-fonts nil)
+
 (add-hook 'eww-mode-hook #'visual-line-mode)
+
+;; Elfeed
+
+(defun elfeed-mark-all-as-read ()
+  "Mark all elfeed items as read."
+  (interactive)
+  (mark-whole-buffer)
+  (elfeed-search-untag-all-unread))
+
+(setq elfeed-search-filter "@2-week-ago +unread")
+
+(add-hook 'elfeed-search-mode-hook #'elfeed-update)
+
+;; ChatGPT
+
+(use-package! chatgpt
+  :defer t
+  :config
+  (unless (boundp 'python-interpreter)
+    (defvaralias 'python-interpreter 'python-shell-interpreter))
+  (setq chatgpt-repo-path (expand-file-name "straight/repos/ChatGPT.el/" doom-local-dir))
+  (set-popup-rule! (regexp-quote "*ChatGPT*")
+    :side 'bottom :size .5 :ttl nil :quit t :modeline nil)
+  :bind ("C-c q" . chatgpt-query))
 
 ;; Common Lisp settings
 
@@ -275,6 +319,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'lisp-mode-hook #'paredit-mode)
 (add-hook 'lisp-mode-hook #'flycheck-mode)
 (add-hook 'lisp-mode-hook #'clisp-mappings)
+(add-hook 'lisp-mode-hook #'aggressive-indent-mode)
 
 ;; (add-hook 'lisp-mode-hook #'linum-mode)
 
@@ -290,6 +335,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'elisp-mappings)
+(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
 ;; Restclient settings
 
@@ -364,11 +410,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (setq sql-postgres-login-params nil)
 
-;; Separate work laptop -specific connection configurations to a separate file.
-(let ((sql-config-file "./sql-connections.el"))
-  (when (file-exists-p sql-config-file)
-    (load! sql-config-file)))
-
 ;; Capitalize keywords in SQL mode
 (add-hook 'sql-mode-hook 'sqlup-mode)
 ;; Capitalize keywords in an interactive session (e.g. psql)
@@ -428,14 +469,26 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-hook 'org-checkbox-statistics-hook #'ct/org-summary-checkbox-cookie)
 
-(use-package prettier
-  :hook ((typescript-mode . prettier-mode)
-         (js-mode . prettier-mode)
-         (web-mode . prettier-mode)
-         ;; (json-mode . prettier-mode)
-         (yaml-mode . prettier-mode)))
+;; (use-package prettier
+;;   :hook ((typescript-mode . prettier-mode)
+;;          (js-mode . prettier-mode)
+;;          (web-mode . prettier-mode)
+;;          ;; (json-mode . prettier-mode)
+;;          (yaml-mode . prettier-mode)))
 
-(setq prettier-inline-errors-flag t)
+(defun disable-autoformat-if-no-prettier-config ()
+  (unless (locate-dominating-file default-directory ".prettierrc")
+    (format-all-mode -1)))
+
+(add-hook! 'js2-mode-hook #'disable-autoformat-if-no-prettier-config)
+
+(add-hook! 'typescript-mode-hook #'disable-autoformat-if-no-prettier-config)
+
+(add-hook! 'web-mode-hook #'disable-autoformat-if-no-prettier-config)
+
+(add-hook! 'yaml-mode #'disable-autoformat-if-no-prettier-config)
+
+;; (setq prettier-inline-errors-flag t)
 
 (defun kill-magit-diff-buffer-in-current-repo (&rest _)
   "Delete the magit-diff buffer related to the current repo."
