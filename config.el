@@ -139,7 +139,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "ä") #'delete-other-windows)
   (define-key evil-normal-state-map (kbd "C-ä") #'split-window-right)
   (define-key evil-normal-state-map (kbd "ö") #'save-buffer)
-  (define-key evil-normal-state-map (kbd "Ä") #'projectile-ag)
+  (define-key evil-normal-state-map (kbd "Ä") #'counsel-projectile-rg)
   (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
   (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window))
 
