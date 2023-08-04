@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Tuomo Virolainen"
@@ -52,31 +51,64 @@
       mac-function-modifier 'super
       select-enable-clipboard t)
 
+;; Tree-sitter
+
 (use-package! tree-sitter
-   :hook (prog-mode . turn-on-tree-sitter-mode)
-   :hook (tree-sitter-after-on . tree-sitter-hl-mode)
-   :config
-   (require 'tree-sitter-langs)
-   ;; This makes every node a link to a section of code
-   (setq tree-sitter-debug-jump-buttons t
-         ;; and this highlights the entire sub tree in your code
-         tree-sitter-debug-highlight-jump-region t))
+  :hook (prog-mode . turn-on-tree-sitter-mode)
+  :hook (tree-sitter-after-on . tree-sitter-hl-mode)
+  :config
+  (require 'tree-sitter-langs)
+  ;; This makes every node a link to a section of code
+  (setq tree-sitter-debug-jump-buttons t
+        ;; and this highlights the entire sub tree in your code
+        tree-sitter-debug-highlight-jump-region t))
+
+(setq treesit-language-source-alist
+      '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+        (cmake "https://github.com/uyha/tree-sitter-cmake")
+        (css "https://github.com/tree-sitter/tree-sitter-css")
+        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+        (go "https://github.com/tree-sitter/tree-sitter-go")
+        (html "https://github.com/tree-sitter/tree-sitter-html")
+        (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+        (json "https://github.com/tree-sitter/tree-sitter-json")
+        (make "https://github.com/alemuller/tree-sitter-make")
+        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+        (python "https://github.com/tree-sitter/tree-sitter-python")
+        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+        (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+        (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+(setq major-mode-remap-alist
+      '((yaml-mode . yaml-ts-mode)
+        (bash-mode . bash-ts-mode)
+        (js2-mode . js-ts-mode)
+        (typescript-mode . typescript-ts-mode)
+        (json-mode . json-ts-mode)
+        (css-mode . css-ts-mode)
+        ;; (markdown-mode . markdown-ts-mode)
+        ;; (web-mode . html-ts-mode)
+        ;;(emacs-lisp-mode . elisp-ts-mode)
+        (python-mode . python-ts-mode)))
+
+;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
 
 ;; https://merrick.luois.me/posts/better-tsx-support-in-doom-emacs
-(use-package! typescript-mode
-  :mode ("\\.tsx\\'" . typescript-tsx-tree-sitter-mode)
-  :config
-  (setq typescript-indent-level 2)
+;; (use-package! typescript-mode
+;;   :mode ("\\.tsx\\'" . typescript-tsx-tree-sitter-mode)
+;;   :config
+;;   (setq typescript-indent-level 2)
 
-  (define-derived-mode typescript-tsx-tree-sitter-mode typescript-mode "TypeScript TSX"
-    (setq-local indent-line-function 'rjsx-indent-line))
+;;   (define-derived-mode typescript-tsx-tree-sitter-mode typescript-mode "TypeScript TSX"
+;;     (setq-local indent-line-function 'rjsx-indent-line))
 
-  (add-hook! 'typescript-tsx-tree-sitter-mode-local-vars-hook
-             #'+javascript-init-lsp-or-tide-maybe-h
-             #'rjsx-minor-mode)
-  (map! :map typescript-tsx-tree-sitter-mode-map
-        "<" 'rjsx-electric-lt
-        ">" 'rjsx-electric-gt))
+;;   (add-hook! 'typescript-tsx-tree-sitter-mode-local-vars-hook
+;;              #'+javascript-init-lsp-or-tide-maybe-h
+;;              #'rjsx-minor-mode)
+;;   (map! :map typescript-tsx-tree-sitter-mode-map
+;;         "<" 'rjsx-electric-lt
+;;         ">" 'rjsx-electric-gt))
 
 (after! tree-sitter
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-tree-sitter-mode . tsx)))
@@ -240,10 +272,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; (lsp indentation can handle them out of the box).
 (with-eval-after-load 'cider
   (define-clojure-indent
-    (POST 2)
-    (GET 2)
-    (PATCH 2)
-    (PUT 2)))
+   (POST 2)
+   (GET 2)
+   (PATCH 2)
+   (PUT 2)))
 
 ;; TypeScript etc.
 
@@ -292,7 +324,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (defvaralias 'python-interpreter 'python-shell-interpreter))
   (setq chatgpt-repo-path (expand-file-name "straight/repos/ChatGPT.el/" doom-local-dir))
   (set-popup-rule! (regexp-quote "*ChatGPT*")
-    :side 'bottom :size .5 :ttl nil :quit t :modeline nil)
+                   :side 'bottom :size .5 :ttl nil :quit t :modeline nil)
   :bind ("C-c q" . chatgpt-query))
 
 ;; Common Lisp settings
@@ -521,6 +553,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (defalias #'forward-evil-word #'forward-evil-symbol)
   ;; make evil-search-word look for symbol rather than word boundaries
   (setq-default evil-symbol-word-search t))
+
+;; https://zck.org/balance-emacs-windows
+(seq-doseq (fn (list #'split-window #'delete-window))
+  (advice-add fn
+              :after
+              #'(lambda (&rest args) (balance-windows))))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
