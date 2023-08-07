@@ -94,7 +94,9 @@
         ;;(emacs-lisp-mode . elisp-ts-mode)
         (python-mode . python-ts-mode)))
 
-;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+(defun treesit-install-grammars ()
+  (interactive)
+  (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist)))
 
 ;; https://merrick.luois.me/posts/better-tsx-support-in-doom-emacs
 ;; (use-package! typescript-mode
@@ -306,6 +308,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq elfeed-search-filter "@2-week-ago +unread")
 
 (add-hook 'elfeed-search-mode-hook #'elfeed-update)
+
+(add-hook 'elfeed-search-mode-hook #'(lambda ()
+                                       (defun elfeed-kill-buffers ()
+                                         "Kill elfeed buffer and the elfeed.org feed definition buffer."
+                                         (interactive)
+                                         (let ((buffer (get-buffer "elfeed.org")))
+                                           (kill-buffer buffer)
+                                           (elfeed-kill-buffer)))
+                                       (evil-local-set-key 'normal (kbd "q") #'elfeed-kill-buffers)))
 
 ;; ChatGPT
 
