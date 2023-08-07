@@ -30,6 +30,8 @@
 ;; (setq doom-theme 'doom-material)
 ;; (setq doom-theme 'doom-fairy-floss)
 ;; (setq doom-theme 'doom-gruvbox)
+;; (setq doom-theme 'doom-zenburn)
+;; (setq doom-theme 'ef-elea-light)
 
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
 
@@ -175,15 +177,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
   (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window))
 
-(defun setup-input-decode-map ()
-  (define-key input-decode-map (kbd "C-h") (kbd "C-x o"))
-  (define-key input-decode-map (kbd "C-p") #'projectile-find-file)
-  (define-key input-decode-map (kbd "C-l") (kbd "C-x o"))
-  (define-key input-decode-map (kbd "C-b") (kbd "C-x b"))
-  (define-key input-decode-map (kbd "C-n") (kbd "C-x C-f"))
-  (define-key input-decode-map (kbd "C-M-<left>") (kbd "C-x <left>"))
-  (define-key input-decode-map (kbd "C-M-<right>") (kbd "C-x <right>")))
-
 (defun setup-global-keys ()
   (define-key evil-normal-state-map (kbd "C-M--") 'ibuffer)
   (global-set-key (kbd "M-<right>") 'forward-word)
@@ -195,7 +188,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
 
 (setup-global-keys)
-(setup-input-decode-map)
 
 ;; Clojure settings
 
@@ -501,12 +493,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-hook 'org-checkbox-statistics-hook #'ct/org-summary-checkbox-cookie)
 
-;; (use-package prettier
-;;   :hook ((typescript-mode . prettier-mode)
-;;          (js-mode . prettier-mode)
-;;          (web-mode . prettier-mode)
-;;          ;; (json-mode . prettier-mode)
-;;          (yaml-mode . prettier-mode)))
+(use-package prettier
+  :hook ((typescript-mode . prettier-mode)
+         (js-mode . prettier-mode)
+         (web-mode . prettier-mode)
+         ;; (json-mode . prettier-mode)
+         (yaml-mode . prettier-mode)))
 
 (defun disable-autoformat-if-no-prettier-config ()
   (unless (locate-dominating-file default-directory ".prettierrc")
@@ -544,7 +536,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (let ((buffers (magit-mode-get-buffers)))
       (magit-restore-window-configuration)
       (mapc #'kill-buffer buffers)))
-
   (bind-key "q" #'mu-magit-kill-buffers magit-status-mode-map))
 
 ;; Treat Emacs symbol as word in Evil mode
@@ -558,7 +549,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (seq-doseq (fn (list #'split-window #'delete-window))
   (advice-add fn
               :after
-              #'(lambda (&rest args) (balance-windows))))
+              #'(lambda (&rest _args) (balance-windows))))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
