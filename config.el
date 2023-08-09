@@ -27,14 +27,8 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-dracula)
-;; (setq doom-theme 'doom-material)
-;; (setq doom-theme 'doom-fairy-floss)
-;; (setq doom-theme 'doom-gruvbox)
-;; (setq doom-theme 'doom-zenburn)
-;; (setq doom-theme 'ef-elea-light)
 
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
-
 (add-to-list 'exec-path "/opt/homebrew/bin")
 
 ;; Separate work laptop -specific connection configurations to a separate file.
@@ -232,6 +226,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (defun my-cider-repl-mode-hook ()
   (paredit-mode 1)
+  (+word-wrap-mode 1)
   (evil-local-set-key 'insert (kbd "C-<return>") 'paredit-RET)
   (evil-local-set-key 'insert (kbd "RET") 'cider-repl-closing-return)
   (setq cider-repl-buffer-size-limit 20000))
@@ -511,17 +506,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
          ;; (json-mode . prettier-mode)
          (yaml-mode . prettier-mode)))
 
-(defun disable-autoformat-if-no-prettier-config ()
-  (unless (locate-dominating-file default-directory ".prettierrc")
-    (format-all-mode -1)))
+;; (defun disable-autoformat-if-no-prettier-config ()
+;;   (unless (locate-dominating-file default-directory ".prettierrc")
+;;     (format-all-mode -1)))
 
-(add-hook! 'js2-mode-hook #'disable-autoformat-if-no-prettier-config)
-
-(add-hook! 'typescript-mode-hook #'disable-autoformat-if-no-prettier-config)
-
-(add-hook! 'web-mode-hook #'disable-autoformat-if-no-prettier-config)
-
-(add-hook! 'yaml-mode #'disable-autoformat-if-no-prettier-config)
+;; (add-hook! 'js2-mode-hook #'disable-autoformat-if-no-prettier-config)
+;; (add-hook! 'typescript-mode-hook #'disable-autoformat-if-no-prettier-config)
+;; (add-hook! 'web-mode-hook #'disable-autoformat-if-no-prettier-config)
+;; (add-hook! 'yaml-mode #'disable-autoformat-if-no-prettier-config)
 
 ;; (setq prettier-inline-errors-flag t)
 
