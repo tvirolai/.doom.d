@@ -171,7 +171,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "ö") #'save-buffer)
   (define-key evil-normal-state-map (kbd "Ä") #'counsel-projectile-rg)
   (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
-  (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window))
+  (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window)
+
+  (define-key evil-insert-state-map (kbd "C-h") #'evil-window-left)
+  (define-key evil-insert-state-map (kbd "C-j") #'evil-window-down)
+  (define-key evil-insert-state-map (kbd "C-k") #'evil-window-up)
+  (define-key evil-insert-state-map (kbd "C-l") #'evil-window-right))
 
 (defun setup-global-keys ()
   (define-key evil-normal-state-map (kbd "C-M--") 'ibuffer)
