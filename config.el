@@ -278,7 +278,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun eslint-fix-file ()
   "Run the buffer through eslint --fix."
   (interactive)
-  (message "eslint --fix the file" (buffer-file-name))
+  (message "eslint --fix the file %s" (buffer-file-name))
   (call-process-shell-command
    (concat "yarn eslint --fix " (buffer-file-name))
    nil "*Shell Command Output*" t)
@@ -302,8 +302,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun elfeed-mark-all-as-read ()
   "Mark all elfeed items as read."
   (interactive)
-  (mark-whole-buffer)
-  (elfeed-search-untag-all-unread))
+  (when (equal 'elfeed-search-mode major-mode)
+    (mark-whole-buffer)
+    (elfeed-search-untag-all-unread)))
 
 (setq elfeed-search-filter "@2-week-ago +unread")
 
@@ -386,25 +387,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; https://github.com/doomemacs/doomemacs/issues/6073
 (after! restclient (require 'gnutls))
 
-;;; esc quits
-
-(defun minibuffer-keyboard-quit ()
-  "Abort recursive edit.
-In Delete Selection mode, if the mark is active, just deactivate it;
-then it takes a second \\[keyboard-quit] to abort the minibuffer."
-  (interactive)
-  (if (and delete-selection-mode transient-mark-mode mark-active)
-      (setq deactivate-mark t)
-    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
-    (abort-recursive-edit)))
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
-(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-
 (defun org-mode-remaps ()
   ;; Remap org-mode meta keys for convenience
   (evil-declare-key '(normal insert) org-mode-map
@@ -459,18 +441,19 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (org-todo state)))
 
 (defun ct/org-summary-todo-cookie (n-done n-not-done)
-  "Switch header state to DONE when all subentries are DONE, to TODO when none are DONE, and to DOING otherwise"
-  (let (org-log-done org-log-states)   ; turn off logging
-    (org-todo-if-needed (cond ((= n-done 0)
-                               "TODO")
-                              ((= n-not-done 0)
-                               "DONE")
-                              (t
-                               "DOING")))))
+  "Switch header state to DONE when all subentries are DONE,
+to TODO when none are DONE, and to DOING otherwise"
+  (org-todo-if-needed (cond ((= n-done 0)
+                             "TODO")
+                            ((= n-not-done 0)
+                             "DONE")
+                            (t
+                             "DOING"))))
 (add-hook 'org-after-todo-statistics-hook #'ct/org-summary-todo-cookie)
 
 (defun ct/org-summary-checkbox-cookie ()
-  "Switch header state to DONE when all checkboxes are ticked, to TODO when none are ticked, and to DOING otherwise"
+  "Switch header state to DONE when all checkboxes are ticked,
+to TODO when none are ticked, and to DOING otherwise"
   (let (beg end)
     (unless (not (org-get-todo-state))
       (save-excursion
