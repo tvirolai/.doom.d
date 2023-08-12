@@ -120,6 +120,7 @@
 (setq org-roam-completion-everywhere t)
 
 (after! org-roam
+  (org-roam-db-sync)
   (setq org-roam-capture-templates
         `(("n" "default note" plain "%?"
            :if-new
@@ -186,7 +187,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (global-set-key (kbd "C-M-ä") 'kill-buffer-and-window)
   (global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
   (global-set-key "\C-x\ \C-r" 'recentf-open-files)
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
+  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
+  (global-set-key (kbd "C-h") #'evil-window-left)
+  (global-set-key (kbd "C-j") #'evil-window-down)
+  (global-set-key (kbd "C-k") #'evil-window-up)
+  (global-set-key (kbd "C-l") #'evil-window-right))
 
 (setup-global-keys)
 
@@ -296,6 +302,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq shr-use-fonts nil)
 
 (add-hook 'eww-mode-hook #'visual-line-mode)
+
+;; Terminal
+
+(with-eval-after-load 'eshell-mode
+  (define-key eshell-mode-map (kbd "C-l") #'evil-window-right))
 
 ;; Elfeed
 
@@ -421,19 +432,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq org-journal-carryover-items
         "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""))
 
-(setq org-startup-folded 'nofold)
-
-(add-hook 'sql-mode-hook 'sql-indent-enable)
-
-(setq sql-postgres-login-params nil)
-
-;; Capitalize keywords in SQL mode
-(add-hook 'sql-mode-hook 'sqlup-mode)
-;; Capitalize keywords in an interactive session (e.g. psql)
-(add-hook 'sql-interactive-mode-hook 'sqlup-mode)
-;; Set a global keyword to use sqlup on a region
-(global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
-
 ;; SOURCE: https://christiantietze.de/posts/2021/02/emacs-org-todo-doing-done-checkbox-cycling/
 (defun org-todo-if-needed (state)
   "Change header state to STATE unless the current item is in STATE already."
@@ -487,6 +485,22 @@ to TODO when none are ticked, and to DOING otherwise"
 
 (add-hook 'org-checkbox-statistics-hook #'ct/org-summary-checkbox-cookie)
 
+;;
+
+(setq org-startup-folded 'nofold)
+
+(add-hook 'sql-mode-hook 'sql-indent-enable)
+
+(setq sql-postgres-login-params nil)
+
+;; Capitalize keywords in SQL mode
+(add-hook 'sql-mode-hook 'sqlup-mode)
+;; Capitalize keywords in an interactive session (e.g. psql)
+(add-hook 'sql-interactive-mode-hook 'sqlup-mode)
+;; Set a global keyword to use sqlup on a region
+(global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
+
+
 (use-package prettier
   :hook ((typescript-mode . prettier-mode)
          (js-mode . prettier-mode)
@@ -504,6 +518,8 @@ to TODO when none are ticked, and to DOING otherwise"
 ;; (add-hook! 'yaml-mode #'disable-autoformat-if-no-prettier-config)
 
 ;; (setq prettier-inline-errors-flag t)
+
+;; Magit
 
 (defun kill-magit-diff-buffer-in-current-repo (&rest _)
   "Delete the magit-diff buffer related to the current repo."
