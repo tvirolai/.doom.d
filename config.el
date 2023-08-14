@@ -240,6 +240,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (+word-wrap-mode 1)
   (evil-local-set-key 'insert (kbd "C-<return>") 'paredit-RET)
   (evil-local-set-key 'insert (kbd "RET") 'cider-repl-closing-return)
+  (evil-cleverparens-mode 1)
   (setq cider-repl-buffer-size-limit 20000))
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
@@ -367,6 +368,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'lisp-mode-hook #'flycheck-mode)
 (add-hook 'lisp-mode-hook #'clisp-mappings)
 (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
+(add-hook 'lisp-mode-hook #'evil-cleverparens-mode)
 
 ;; (add-hook 'lisp-mode-hook #'linum-mode)
 
@@ -379,10 +381,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
   (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
 
-(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook #'paredit-modej)
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'elisp-mappings)
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+(add-hook 'lisp-mode-hook #'evil-cleverparens-mode)
 
 ;; Restclient settings
 

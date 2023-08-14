@@ -65,3 +65,4 @@
   :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
 (package! smex)
 (package! ef-themes)
+(package! evil-cleverparens)
