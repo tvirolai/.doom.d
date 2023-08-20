@@ -22,6 +22,8 @@
 ;;       doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 12 :weight 'regular))
+;; (setq doom-font (font-spec :family "JetBrains Mono" :size 13 :weight 'regular)
+;;       doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 12 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -126,6 +128,11 @@
            :if-new
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                       "#+title: ${title}\n#+date: %t\n#+filetags: \n\n ")
+           :unnarrowed t)
+          ("b" "books" plain "%?"
+           :if-new
+           (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+author: \n#+title: ${title}\n#+date: %t\n#+origin: \n#+filetags: \n\n ")
            :unnarrowed t))))
 
 (setq history-length 25)
@@ -381,7 +388,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
   (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
 
-(add-hook 'emacs-lisp-mode-hook #'paredit-modej)
+(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'elisp-mappings)
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
