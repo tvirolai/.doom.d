@@ -34,7 +34,7 @@
 (add-to-list 'exec-path "/opt/homebrew/bin")
 
 ;; Separate work laptop -specific connection configurations to a separate file.
-(let ((sql-config-file "~/.doom.d/sql-connections.el"))
+(let ((sql-config-file "~/.config/doom/sql-connections.el"))
   (print "Looking for a configuration file...")
   (when (file-exists-p sql-config-file)
     (print "Configuration file found! Loading...")
@@ -322,8 +322,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "Mark all elfeed items as read."
   (interactive)
   (when (equal 'elfeed-search-mode major-mode)
-    (mark-whole-buffer)
-    (elfeed-search-untag-all-unread)))
+    (elfeed-untag elfeed-search-entries 'unread)
+    (elfeed-search-update :force)))
 
 (setq elfeed-search-filter "@2-week-ago +unread")
 
