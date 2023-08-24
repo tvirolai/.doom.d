@@ -33,6 +33,9 @@
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
 (add-to-list 'exec-path "/opt/homebrew/bin")
 
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 ;; Separate work laptop -specific connection configurations to a separate file.
 (let ((sql-config-file "~/.config/doom/sql-connections.el"))
   (print "Looking for a configuration file...")
@@ -132,7 +135,7 @@
           ("b" "books" plain "%?"
            :if-new
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                      "#+author: \n#+title: ${title}\n#+date: %t\n#+origin: \n#+filetags: \n\n ")
+                      "#+author: %^{author}\n#+title: ${title}\n#+date: %t\n#+origin: %^{origin}\n#+filetags: :kirjat:\n\n ")
            :unnarrowed t))))
 
 (setq history-length 25)
@@ -165,6 +168,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+(define-key vertico-map [escape] 'minibuffer-keyboard-quit)
 
 (with-eval-after-load 'evil-maps
   (define-key evil-normal-state-map (kbd "C-u") #'evil-scroll-up)
@@ -177,7 +181,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "ä") #'delete-other-windows)
   (define-key evil-normal-state-map (kbd "C-ä") #'split-window-right)
   (define-key evil-normal-state-map (kbd "ö") #'save-buffer)
-  (define-key evil-normal-state-map (kbd "Ä") #'counsel-projectile-rg)
+  (define-key evil-normal-state-map (kbd "Ä") #'+vertico/project-search)
   (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
   (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window)
 

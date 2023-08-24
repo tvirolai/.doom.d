@@ -65,4 +65,6 @@
   :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
 (package! smex)
 (package! ef-themes)
-(package! evil-cleverparens)
+(package! exec-path-from-shell)
+(package! counsel)
+(package! counsel-projectile)
