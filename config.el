@@ -168,7 +168,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-(define-key vertico-map [escape] 'minibuffer-keyboard-quit)
 
 (with-eval-after-load 'evil-maps
   (define-key evil-normal-state-map (kbd "C-u") #'evil-scroll-up)
@@ -251,7 +250,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (+word-wrap-mode 1)
   (evil-local-set-key 'insert (kbd "C-<return>") 'paredit-RET)
   (evil-local-set-key 'insert (kbd "RET") 'cider-repl-closing-return)
-  (evil-cleverparens-mode 1)
   (setq cider-repl-buffer-size-limit 20000))
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
@@ -346,12 +344,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (use-package! chatgpt
   :defer t
-  :config
-  (unless (boundp 'python-interpreter)
-    (defvaralias 'python-interpreter 'python-shell-interpreter))
-  (setq chatgpt-repo-path (expand-file-name "straight/repos/ChatGPT.el/" doom-local-dir))
-  (set-popup-rule! (regexp-quote "*ChatGPT*")
-                   :side 'bottom :size .5 :ttl nil :quit t :modeline nil)
   :bind ("C-c q" . chatgpt-query))
 
 ;; Common Lisp settings
@@ -379,7 +371,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'lisp-mode-hook #'flycheck-mode)
 (add-hook 'lisp-mode-hook #'clisp-mappings)
 (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
-(add-hook 'lisp-mode-hook #'evil-cleverparens-mode)
 
 ;; (add-hook 'lisp-mode-hook #'linum-mode)
 
@@ -396,7 +387,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'elisp-mappings)
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-(add-hook 'lisp-mode-hook #'evil-cleverparens-mode)
 
 ;; Restclient settings
 

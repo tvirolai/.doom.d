@@ -52,7 +52,6 @@
 (package! presentation)
 (package! sparql-mode)
 (package! ob-restclient)
-(unpin! clj-refactor)
 (package! sql-indent)
 (package! sqlup-mode)
 (package! tree-sitter)
@@ -61,10 +60,8 @@
 (package! jet)
 (package! git-link)
 (package! aggressive-indent)
-(package! chatgpt
-  :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
-(package! smex)
 (package! ef-themes)
 (package! exec-path-from-shell)
-(package! counsel)
-(package! counsel-projectile)
+(package! chatgpt
+  :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
+(package! lsp-treemacs)
