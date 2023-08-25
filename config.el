@@ -135,7 +135,7 @@
           ("b" "books" plain "%?"
            :if-new
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                      "#+author: %^{author}\n#+title: ${title}\n#+date: %t\n#+origin: %^{origin}\n#+filetags: :kirjat:\n\n ")
+                      "#+author: %^{author}\n#+title: ${title}\n#+subtitle: \n#+date: %t\n#+origin: %^{origin}\n#+category: \n#+filetags: :kirjat:\n\n ")
            :unnarrowed t))))
 
 (setq history-length 25)
@@ -183,6 +183,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "Ä") #'+vertico/project-search)
   (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
   (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window)
+  (define-key evil-normal-state-map (kbd "SPC z") #'recentf-open-files)
+  (define-key evil-normal-state-map (kbd "C--") nil)
+  (define-key evil-normal-state-map (kbd "C-M--") #'ibuffer)
 
   (define-key evil-insert-state-map (kbd "C-h") #'evil-window-left)
   (define-key evil-insert-state-map (kbd "C-j") #'evil-window-down)
@@ -190,15 +193,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-insert-state-map (kbd "C-l") #'evil-window-right))
 
 (defun setup-global-keys ()
-  (define-key evil-normal-state-map (kbd "C-M--") 'ibuffer)
-  (global-set-key (kbd "M-<right>") 'forward-word)
-  (global-set-key (kbd "M-<left>") 'backward-word)
-  (global-set-key (kbd "´") 'kill-buffer)
-  (global-set-key (kbd "C-M-ä") 'kill-buffer-and-window)
-  (global-set-key (kbd "C-M-y") 'reverse-transpose-sexps)
-  (global-set-key "\C-x\ \C-r" 'recentf-open-files)
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-
+  (global-set-key (kbd "M-n") #'make-frame)
+  (global-set-key (kbd "M-q") #'doom/delete-frame-with-prompt)
+  (global-set-key (kbd "M-§") #'other-frame)
+  (global-set-key (kbd "M-<right>") #'forward-word)
+  (global-set-key (kbd "M-<left>") #'backward-word)
+  (global-set-key (kbd "´") #'kill-buffer)
+  (global-set-key (kbd "C-M-y") #'reverse-transpose-sexps)
+  (global-set-key (kbd "C-c C-c M-x") #'execute-extended-command)
   (global-set-key (kbd "C-h") #'evil-window-left)
   (global-set-key (kbd "C-j") #'evil-window-down)
   (global-set-key (kbd "C-k") #'evil-window-up)
@@ -350,7 +352,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (defun clisp-mappings ()
   (evil-local-set-key 'normal (kbd "°") 'sly-compile-file)
-  (evil-local-set-key 'normal (kbd "M-§") 'sly-compile-file)
   (evil-local-set-key 'normal (kbd "§") 'sly-compile-defun)
   (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
   (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
@@ -378,7 +379,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (defun elisp-mappings ()
   (evil-local-set-key 'normal (kbd "°") 'eval-buffer)
-  (evil-local-set-key 'normal (kbd "M-§") 'eval-buffer)
   (evil-local-set-key 'normal (kbd "§") 'eval-defun)
   (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
   (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
