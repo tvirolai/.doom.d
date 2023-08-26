@@ -66,6 +66,7 @@
 
 (setq treesit-language-source-alist
       '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+        (clojure "https://github.com/clojure-emacs/clojure-ts-mode")
         (cmake "https://github.com/uyha/tree-sitter-cmake")
         (css "https://github.com/tree-sitter/tree-sitter-css")
         (elisp "https://github.com/Wilfred/tree-sitter-elisp")
@@ -84,6 +85,8 @@
 (setq major-mode-remap-alist
       '((yaml-mode . yaml-ts-mode)
         (bash-mode . bash-ts-mode)
+        (clojure-mode . clojure-ts-mode)
+        (clojurescript-mode . clojurescript-ts-mode)
         (js2-mode . js-ts-mode)
         (typescript-mode . typescript-ts-mode)
         (json-mode . json-ts-mode)
@@ -230,6 +233,16 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
           (t (concat ns "-test")))))
 
 (setq cider-test-infer-test-ns #'cider-custom-test-ns-fn)
+
+;; (push '(clojure-mode . clojure-ts-mode) major-mode-remap-alist)
+;; (push '(clojurec-mode . clojurec-ts-mode) major-mode-remap-alist)
+;; (push '(clojurescript-mode . clojurescript-ts-mode) major-mode-remap-alist)
+
+(add-hook 'clojure-ts-mode-hook #'cider-mode)
+
+(add-hook 'clojure-ts-mode-hook #'clojure-mode-variables)
+
+(setq clojure-ts-mode-map clojure-mode-map)
 
 (defun initialize-kondo ()
   (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
