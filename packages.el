@@ -66,3 +66,4 @@
   :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
 (package! lsp-treemacs)
 (package! clojure-ts-mode)
+(package! org-modern)

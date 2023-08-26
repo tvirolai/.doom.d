@@ -238,11 +238,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; (push '(clojurec-mode . clojurec-ts-mode) major-mode-remap-alist)
 ;; (push '(clojurescript-mode . clojurescript-ts-mode) major-mode-remap-alist)
 
-(add-hook 'clojure-ts-mode-hook #'cider-mode)
+(with-eval-after-load 'clojure-mode
+  (add-hook 'clojure-ts-mode-hook #'cider-mode)
+  (add-hook 'clojure-ts-mode-hook #'clojure-mode-variables)
 
-(add-hook 'clojure-ts-mode-hook #'clojure-mode-variables)
-
-(setq clojure-ts-mode-map clojure-mode-map)
+  (setq clojure-ts-mode-map clojure-mode-map)
+  (setq clojurescript-ts-mode-map clojurescript-mode-map))
 
 (defun initialize-kondo ()
   (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
@@ -435,6 +436,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                              (org-indent-mode)))
 
 (global-set-key (kbd "C-c c") 'org-capture)
+
+(with-eval-after-load 'org (global-org-modern-mode))
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "DOING(g)" "|" "DONE(d)" "KILL(k)")
