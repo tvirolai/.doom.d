@@ -21,7 +21,7 @@
 ;; (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 12 :weight 'regular))
+      doom-variable-pitch-font (font-spec :family "Iosevka Term" :size 14 :weight 'regular))
 ;; (setq doom-font (font-spec :family "JetBrains Mono" :size 13 :weight 'regular)
 ;;       doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 12 :weight 'regular))
 
@@ -269,9 +269,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq cider-repl-buffer-size-limit 20000))
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
+(add-hook 'clojure-ts-mode-hook #'my-clojure-mode-hook)
 (add-hook 'cider-repl-mode-hook #'my-cider-repl-mode-hook)
 
 (add-hook 'clojure-mode-hook 'lsp)
+(add-hook 'clojure-ts-mode-hook 'lsp)
+(add-hook 'clojurescript-ts-mode-hook 'lsp)
 (add-hook 'clojurescript-mode-hook 'lsp)
 
 (setq gc-cons-threshold (* 100 1024 1024)
