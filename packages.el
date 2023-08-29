@@ -62,8 +62,6 @@
 (package! aggressive-indent)
 (package! ef-themes)
 (package! exec-path-from-shell)
-(package! chatgpt
-  :recipe (:host github :repo "joshcho/ChatGPT.el" :files ("dist" "*.el")))
 (package! lsp-treemacs)
 (package! clojure-ts-mode)
 (package! org-modern)

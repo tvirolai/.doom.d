@@ -359,12 +359,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                                            (elfeed-kill-buffer)))
                                        (evil-local-set-key 'normal (kbd "q") #'elfeed-kill-buffers)))
 
-;; ChatGPT
-
-(use-package! chatgpt
-  :defer t
-  :bind ("C-c q" . chatgpt-query))
-
 ;; Common Lisp settings
 
 (defun clisp-mappings ()
