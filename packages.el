@@ -65,3 +65,8 @@
 (package! lsp-treemacs)
 (package! clojure-ts-mode)
 (package! org-modern)
+(package! org-appear
+  :recipe (:host github :repo "awth13/org-appear"))
+(package! mixed-pitch)
+(package! multi-vterm)
+(package! visual-fill-column)
