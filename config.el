@@ -243,11 +243,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; LSP
 
-(setq dap-ui-variable-length 200)
-
-(after! lsp-mode
-  (setq +lsp-company-backends
-        '(:separate company-capf company-yasnippet company-dabbrev)))
+;; (after! lsp-mode
+;;   (setq +lsp-company-backends
+;;         '(:separate company-capf company-yasnippet company-dabbrev)))
 
 (setq yas-triggers-in-field t)
 
@@ -317,8 +315,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Clojure settings
 
-(global-company-mode)
-
 (defun clojure-mappings ()
   (evil-local-set-key 'normal (kbd "°") 'cider-eval-buffer)
   (evil-local-set-key 'normal (kbd "M-§") 'cider-eval-buffer)
@@ -382,7 +378,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
-      cider-font-lock-dynamically nil
+      cider-font-lock-dynamically t
       cider-repl-buffer-size-limit 100
       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
       lsp-signature-auto-activate nil
@@ -400,7 +396,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Make indentation word right with Compojure Api definitions
 ;; (lsp indentation can handle them out of the box).
-(with-eval-after-load 'cider
+(after! cider
   (define-clojure-indent
    (POST 2)
    (GET 2)
@@ -409,8 +405,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (after! company
   (setq company-idle-delay 0.5
-        company-minimum-prefix-length 2)
+        company-minimum-prefix-length 3)
   (setq company-show-quick-access t)
+  (global-company-mode)
   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 
 ;; TypeScript etc.
