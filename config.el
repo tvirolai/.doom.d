@@ -274,56 +274,49 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
-(with-eval-after-load 'evil-maps
-  (define-key evil-normal-state-map (kbd "C-u") #'evil-scroll-up)
-  (define-key evil-normal-state-map (kbd "C-h") #'evil-window-left)
-  (define-key evil-normal-state-map (kbd "C-j") #'evil-window-down)
-  (define-key evil-normal-state-map (kbd "C-k") #'evil-window-up)
-  (define-key evil-normal-state-map (kbd "C-l") #'evil-window-right)
-  (define-key evil-normal-state-map (kbd "C-ö") #'split-window-below)
-  (define-key evil-normal-state-map (kbd "Ö") 'xref-find-definitions)
-  (define-key evil-normal-state-map (kbd "ä") #'delete-other-windows)
-  (define-key evil-normal-state-map (kbd "C-ä") #'split-window-right)
-  (define-key evil-normal-state-map (kbd "ö") #'save-buffer)
-  (define-key evil-normal-state-map (kbd "Ä") #'+vertico/project-search)
-  (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
-  (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window)
-  (define-key evil-normal-state-map (kbd "SPC z") #'recentf-open-files)
-  (define-key evil-normal-state-map (kbd "C--") nil)
-  (define-key evil-normal-state-map (kbd "C-M--") #'ibuffer)
+(map! :after evil-maps
+      :gnvi "C-k" #'evil-window-up
+      :gnvi "C-j" #'evil-window-down
+      :gnvi "C-l" #'evil-window-right
+      :gnvi "C-h" #'evil-window-left
 
-  (define-key evil-insert-state-map (kbd "C-h") #'evil-window-left)
-  (define-key evil-insert-state-map (kbd "C-j") #'evil-window-down)
-  (define-key evil-insert-state-map (kbd "C-k") #'evil-window-up)
-  (define-key evil-insert-state-map (kbd "C-l") #'evil-window-right))
+      :n "C-u" #'evil-scroll-up
+      :n "C-ö" #'split-window-below
+      :n "Ö" #'xref-find-definitions
+      :n "ä" #'delete-other-windows
+      :n "C-ä" #'split-window-right
+      :n "ö" #'save-buffer
+      :n "Ä" #'+vertico/project-search
+      :n "¨" #'evil-ex-search-forward
+      :n "Q" #'kill-buffer-and-window
+      :n "SPC z" #'recentf-open-files
+      :n "C--" nil
+      :n "C-M--" #'ibuffer)
 
-(defun setup-global-keys ()
-  (global-set-key (kbd "M-n") #'make-frame)
-  (global-set-key (kbd "M-q") #'doom/delete-frame-with-prompt)
-  (global-set-key (kbd "M-§") #'other-frame)
-  (global-set-key (kbd "M-<right>") #'forward-word)
-  (global-set-key (kbd "M-<left>") #'backward-word)
-  (global-set-key (kbd "´") #'kill-buffer)
-  (global-set-key (kbd "C-M-y") #'reverse-transpose-sexps)
-  (global-set-key (kbd "C-c C-c M-x") #'execute-extended-command)
-  (global-set-key (kbd "C-h") #'evil-window-left)
-  (global-set-key (kbd "C-j") #'evil-window-down)
-  (global-set-key (kbd "C-k") #'evil-window-up)
-  (global-set-key (kbd "C-l") #'evil-window-right))
-
-(setup-global-keys)
+(map! :g "M-n" #'make-frame
+      :g "M-q" #'doom/delete-frame-with-prompt
+      :g "M-§" #'other-frame
+      :g "M-<right>" #'forward-word
+      :g "M-<left>" #'backward-word
+      :g "´" #'kill-buffer
+      :g "C-M-y" #'reverse-transpose-sexps
+      :g "C-c C-c M-x" #'execute-extended-command
+      :g "C-h" #'evil-window-left
+      :g "C-j" #'evil-window-down
+      :g "C-k" #'evil-window-up
+      :g "C-l" #'evil-window-right)
 
 ;; Clojure settings
 
-(defun clojure-mappings ()
-  (evil-local-set-key 'normal (kbd "°") 'cider-eval-buffer)
-  (evil-local-set-key 'normal (kbd "M-§") 'cider-eval-buffer)
-  (evil-local-set-key 'normal (kbd "§") 'cider-eval-defun-at-point)
-  (evil-local-set-key 'normal (kbd "Ö") 'cider-find-var)
-  (evil-local-set-key 'normal (kbd "q") 'cider-popup-buffer-quit)
-  (evil-local-set-key 'normal (kbd "K") 'cider-doc)
-  (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp)
-  (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp))
+(map! :mode clojure-mode
+      :n "°" #'cider-eval-buffer
+      :n "M-§" 'cider-eval-buffer
+      :n "§" 'cider-eval-defun-at-point
+      :n "Ö" 'cider-find-var
+      :n "q" 'cider-popup-buffer-quit
+      :n "K" 'cider-doc
+      :n "DEL" 'paredit-splice-sexp
+      :n "C-DEL" 'paredit-splice-sexp)
 
 (defun cider-custom-test-ns-fn (ns)
   "Recognize namespaces (NS) with suffix -spec or -test as test namespaces."
