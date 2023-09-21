@@ -712,10 +712,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Restclient settings
 
-(defun restclient-mappings ()
-  (define-key evil-normal-state-map (kbd "§") 'restclient-http-send-current))
-
-(add-hook 'restclient-mode-hook 'restclient-mappings)
+(map! :mode resclient-mode
+      :n "§" #'restclient-http-send-current)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -731,8 +729,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
 (setq org-cycle-emulate-tab nil)
-(setq org-startup-folded 'content)
-;; (setq org-startup-folded 'nofold)
+(setq org-startup-folded 'show2levels)
 
 (use-package! visual-fill-column
   :custom
