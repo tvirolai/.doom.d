@@ -257,10 +257,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq evil-ex-substitute-global t)
 (setq evil-kill-on-visual-paste nil)
 
-(setq evil-want-fine-undo t)
+(setq evil-want-fine-undo nil)
 
 (map! :g "C-s" #'save-buffer)
-(map! :after evil :gnvi "¨" #'consult-line)
+(map! :after evil :gnvi "C-å" #'consult-line)
 
 (map! :map dired-mode-map
       :n "h" #'dired-up-directory
@@ -286,7 +286,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (define-key evil-normal-state-map (kbd "C-ä") #'split-window-right)
   (define-key evil-normal-state-map (kbd "ö") #'save-buffer)
   (define-key evil-normal-state-map (kbd "Ä") #'+vertico/project-search)
-  ;; (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
+  (define-key evil-normal-state-map (kbd "¨") #'evil-ex-search-forward)
   (define-key evil-normal-state-map (kbd "Q") #'kill-buffer-and-window)
   (define-key evil-normal-state-map (kbd "SPC z") #'recentf-open-files)
   (define-key evil-normal-state-map (kbd "C--") nil)
@@ -507,61 +507,36 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (elfeed-untag elfeed-search-entries 'unread)
     (elfeed-search-update :force)))
 
-(add-hook! elfeed-search-mode #'(lambda ()
-                                  (defun elfeed-kill-buffers ()
-                                    "Kill elfeed buffer and the elfeed.org feed definition buffer."
-                                    (interactive)
-                                    (let ((buffer (get-buffer "elfeed.org")))
-                                      (kill-buffer buffer)
-                                      (elfeed-kill-buffer)))
-                                  (elfeed-update)
-                                  (evil-local-set-key 'normal (kbd "q") #'elfeed-kill-buffers)))
+(defun elfeed-kill-buffers ()
+  "Kill elfeed buffer and the elfeed.org feed definition buffer."
+  (interactive)
+  (let ((buffer (get-buffer "elfeed.org")))
+    (print "jep jep")
+    (kill-buffer buffer)
+    (elfeed-kill-buffer)))
 
-(map! :map elfeed-search-mode-map
-      :after elfeed-search
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      :n "q" #'+rss/quit
-      :n "e" #'elfeed-update
-      :n "r" #'elfeed-search-untag-all-unread
-      :n "u" #'elfeed-search-tag-all-unread
-      :n "s" #'elfeed-search-live-filter
-      :n "RET" #'elfeed-search-show-entry
-      :n "p" #'elfeed-show-pdf
-      :n "+" #'elfeed-search-tag-all
-      :n "-" #'elfeed-search-untag-all
-      :n "S" #'elfeed-search-set-filter
-      :n "b" #'elfeed-search-browse-url
-      :n "y" #'elfeed-search-yank)
+;; (add-hook! elfeed-search-mode #'(lambda ()
+;;                                   (defun elfeed-kill-buffers ()
+;;                                     "Kill elfeed buffer and the elfeed.org feed definition buffer."
+;;                                     (interactive)
+;;                                     (let ((buffer (get-buffer "elfeed.org")))
+;;                                       (kill-buffer buffer)
+;;                                       (elfeed-kill-buffer)))
+;;                                   (elfeed-update)
+;;                                   (evil-local-set-key 'normal (kbd "q") #'elfeed-kill-buffers)))
 
-(map! :map elfeed-show-mode-map
-      :after elfeed-show
-      [remap kill-this-buffer] "q"
-      [remap kill-buffer] "q"
-      :n doom-leader-key nil
-      :nm "q" #'+rss/delete-pane
-      :nm "o" #'ace-link-elfeed
-      :nm "RET" #'org-ref-elfeed-add
-      :nm "n" #'elfeed-show-next
-      :nm "N" #'elfeed-show-prev
-      :nm "p" #'elfeed-show-pdf
-      :nm "+" #'elfeed-show-tag
-      :nm "-" #'elfeed-show-untag
-      :nm "s" #'elfeed-show-new-live-search
-      :nm "y" #'elfeed-show-yank)
 
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
+
 (after! elfeed-show-mode
-  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+  (set-evil-initial-state! 'elfeed-show-mode 'normal))
 
 (after! evil-snipe
   (push 'elfeed-show-mode   evil-snipe-disabled-modes)
   (push 'elfeed-search-mode evil-snipe-disabled-modes))
 
 (after! elfeed
-
   (elfeed-org)
   (use-package! elfeed-link)
 
@@ -598,7 +573,41 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
           (inhibit-modification-hooks t))
       (visual-fill-column-mode)
       ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-      (set-buffer-modified-p nil)))
+      (set-buffer-modified-p nil))
+
+    (map! :map elfeed-search-mode-map
+          :after elfeed-search
+          [remap kill-this-buffer] "q"
+          [remap kill-buffer] "q"
+          :n doom-leader-key nil
+          :n "q" #'elfeed-kill-buffers
+          :n "e" #'elfeed-update
+          :n "r" #'elfeed-search-untag-all-unread
+          :n "u" #'elfeed-search-tag-all-unread
+          :n "s" #'elfeed-search-live-filter
+          :n "RET" #'elfeed-search-show-entry
+          :n "+" #'elfeed-search-tag-all
+          :n "-" #'elfeed-search-untag-all
+          :n "S" #'elfeed-search-set-filter
+          :n "b" #'elfeed-search-browse-url
+          :n "y" #'elfeed-search-yank)
+
+    (map! :map elfeed-show-mode-map
+          :after elfeed-show
+          [remap kill-this-buffer] "q"
+          [remap kill-buffer] "q"
+          :n doom-leader-key nil
+
+          :nm "q" #'+rss/delete-pane
+          :nm "o" #'ace-link-elfeed
+          :nm "RET" #'org-ref-elfeed-add
+          :nm "n" #'elfeed-show-next
+          :nm "N" #'elfeed-show-prev
+          :nm "p" #'elfeed-show-pdf
+          :nm "+" #'elfeed-show-tag
+          :nm "-" #'elfeed-show-untag
+          :nm "s" #'elfeed-show-new-live-search
+          :nm "y" #'elfeed-show-yank))
 
   (defun +rss/elfeed-search-print-entry (entry)
     "Print ENTRY to the buffer."
@@ -751,7 +760,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (kbd "M-J") 'org-shiftmetadown))
 
 (add-hook! org-mode #'(lambda ()
-                        (visual-line-mode 1) ;; make the lines in the buffer wrap around the edges of the screen.
+                        ;; (visual-line-mode 1) ;; make the lines in the buffer wrap around the edges of the screen.
+                        (+word-wrap-mode)
                         (+org-pretty-mode)
                         (org-mode-remaps)
                         (org-indent-mode)))
