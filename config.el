@@ -201,6 +201,16 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
 
+;; Autocomplete
+
+(add-hook! prog-mode #'company-mode)
+
+(after! company-mode
+  (setq company-idle-delay 0.1
+        company-minimum-prefix-length 2)
+  (setq company-show-quick-access nil)
+  (add-hook 'evil-normal-state-entry-hook #'company-abort))
+
 ;; LSP
 
 (after! lsp-mode
@@ -268,8 +278,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Clojure settings
 
-(global-company-mode)
-
 (map! :mode clojure-mode
       :n "°" #'cider-eval-buffer
       :n "M-§" #'cider-eval-buffer
@@ -330,7 +338,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
-      company-minimum-prefix-length 1
       cider-font-lock-dynamically nil
       cider-repl-buffer-size-limit 1000
       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
@@ -354,13 +361,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    (GET 2)
    (PATCH 2)
    (PUT 2)))
-
-;; (after! company
-;;   (setq company-idle-delay 0.1
-;;         company-minimum-prefix-length 3)
-;;   (setq company-show-quick-access nil)
-;;   ;; (global-company-mode)
-;;   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 
 ;; TypeScript etc.
 
@@ -675,15 +675,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Emacs Lisp settings
 
+(add-hook! 'emacs-lisp-mode #'paredit-mode)
+(add-hook! 'emacs-lisp-mode #'flycheck-mode)
+(add-hook! 'emacs-lisp-mode #'aggressive-indent-mode)
+
 (map! :mode emacs-lisp-mode
       :n "°" #'eval-buffer
       :n "§" #'eval-defun
       :n "DEL" #'paredit-splice-sexp
       :n "C-DEL" #'paredit-splice-sexp)
-
-(add-hook! 'emacs-lisp-mode #'paredit-mode)
-(add-hook! 'emacs-lisp-mode #'flycheck-mode)
-(add-hook! 'emacs-lisp-mode #'aggressive-indent-mode)
 
 ;; Restclient settings
 
