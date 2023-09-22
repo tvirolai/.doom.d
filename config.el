@@ -65,7 +65,9 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
-(global-subword-mode 1)
+(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
+
+;; (global-subword-mode 1)
 
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
@@ -218,6 +220,16 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (setq yas-triggers-in-field t)
 
+;; (setq lsp-auto-guess-root t
+;;       lsp-enable-symbol-highlighting t
+;;       lsp-signature-auto-activate t
+;;       lsp-signature-render-documentation t
+;;       lsp-enable-snippet t
+;;       lsp-headerline-breadcrumb-enable nil
+;;       lsp-file-watch-threshold 99999
+;;       flycheck-check-syntax-automatically '(save idle-change new-line mode-enabled)
+;;       ) ; Restore lsp-mode flycheck behavior.
+
 ;; Evil
 
 (setq evil-split-window-below t
@@ -318,7 +330,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (paredit-mode 1)
   (subword-mode 1)
   (flycheck-mode 1)
-  (clojure-mappings)
   (initialize-kondo))
 
 (defun my-cider-repl-mode-hook ()
@@ -337,15 +348,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'clojure-ts-mode-hook #'lsp)
 (add-hook 'clojurescript-ts-mode-hook #'lsp)
 
+
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
       cider-font-lock-dynamically t
-      cider-repl-buffer-size-limit 100
+      cider-repl-buffer-size-limit 1000
       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
-      lsp-signature-auto-activate nil
       lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
-      lsp-completion-enable t ; uncomment to use cider completion instead of lsp
+      lsp-completion-enable nil ; uncomment to use cider completion instead of lsp
       )
 
 ;; Suppress the 'starting look process' message from ispell:
@@ -356,7 +367,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
 
-;; Make indentation word right with Compojure Api definitions
+;; Make indentation work with Compojure Api definitions
 ;; (lsp indentation can handle them out of the box).
 (after! cider
   (define-clojure-indent
@@ -365,12 +376,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    (PATCH 2)
    (PUT 2)))
 
-(after! company
-  (setq company-idle-delay 0.5
-        company-minimum-prefix-length 3)
-  (setq company-show-quick-access t)
-  (global-company-mode)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
+;; (after! company
+;;   (setq company-idle-delay 0.1
+;;         company-minimum-prefix-length 3)
+;;   (setq company-show-quick-access nil)
+;;   ;; (global-company-mode)
+;;   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 
 ;; TypeScript etc.
 
@@ -406,13 +417,45 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (after! eshell-mode
   (define-key eshell-mode-map (kbd "C-l") #'evil-window-right))
 
-(after! vterm
+;; https://github.com/suonlight/multi-vterm#for-evil-users
+(use-package multi-vterm
+  :after vterm
+  :config (add-hook 'vterm-mode-hook
+                    (lambda ()
+                      (setq-local evil-insert-state-cursor 'box)
+                      (evil-insert-state)))
+
   (define-key vterm-mode-map (kbd "<C-backspace>") (lambda () (interactive) (vterm-send-key (kbd "C-w"))))
   (define-key vterm-mode-map (kbd "<M-backspace>") (lambda () (interactive) (vterm-send-key (kbd "C-w"))))
-  (setq vterm-max-scrollback 100000))
+  (setq vterm-max-scrollback 100000)
+  (define-key vterm-mode-map [return]                      #'vterm-send-return)
 
-(use-package! multi-vterm
-  :after vterm)
+  (setq vterm-keymap-exceptions nil)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
+  (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+  (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
+  (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
+  (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
+  (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
+  (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
+  (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
 
 (setq eshell-prefer-lisp-functions t)
 
@@ -633,12 +676,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Common Lisp settings
 
-(defun clisp-mappings ()
-  (evil-local-set-key 'normal (kbd "°") 'sly-compile-file)
-  (evil-local-set-key 'normal (kbd "§") 'sly-compile-defun)
-  (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
-  (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
-
 (use-package! slime
   :defer t ; don't load the package immediately
   :init ; runs this immediately
@@ -699,18 +736,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (visual-fill-column-center-text t)
   :hook (org-mode . visual-fill-column-mode))
 
-(defun org-mode-remaps ()
-  ;; Remap org-mode meta keys for convenience
-  (evil-declare-key '(normal insert) org-mode-map
-    (kbd "M-l") 'org-metaright
-    (kbd "M-h") 'org-metaleft
-    (kbd "M-k") 'org-metaup
-    (kbd "M-j") 'org-metadown
-    (kbd "M-L") 'org-shiftmetaright
-    (kbd "M-H") 'org-shiftmetaleft
-    (kbd "M-K") 'org-shiftmetaup
-    (kbd "M-J") 'org-shiftmetadown))
-
 (add-hook! org-mode #'(lambda ()
                         ;; (visual-line-mode 1) ;; make the lines in the buffer wrap around the edges of the screen.
                         (+word-wrap-mode)
@@ -729,20 +754,25 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         :ni "M-L" #'org-shiftmetaright
         :ni "M-H" #'org-shiftmetaleft
         :ni "M-K" #'org-shiftmetaup
-        :ni "M-J" #'org-shiftmetadown))
+        :ni "M-J" #'org-shiftmetadown)
 
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "DOING(g)" "|" "DONE(d)" "KILL(k)")
-        (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
-        (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "DOING(g)" "|" "DONE(d)" "KILL(k)")
+          (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
+          (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
-(with-eval-after-load 'org-journal
-  (setq org-journal-date-prefix "#+TITLE: ")
-  (setq org-journal-file-format "%Y-%m-%d.org")
-  (setq org-journal-date-format "%a, %Y-%m-%d")
-  (setq org-journal-enable-agenda-integration t)
-  (setq org-journal-carryover-items
-        "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""))
+  ;; +journal
+  (setq org-journal-dir (concat org-directory "journal/")
+        org-journal-file-type 'monthly
+        org-journal-encrypt-journal t
+        org-journal-enable-cache t
+        org-journal-file-format "%Y%m%d.org"
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-enable-agenda-integration t
+        org-journal-carryover-items "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""
+        org-journal-date-format "%a, %Y-%m-%d"
+        org-journal-date-prefix "#+TITLE: ")
+  (remove-hook 'calendar-today-visible-hook 'org-journal-mark-entries))
 
 ;; SOURCE: https://christiantietze.de/posts/2021/02/emacs-org-todo-doing-done-checkbox-cycling/
 (defun org-todo-if-needed (state)
@@ -807,16 +837,16 @@ to TODO when none are ticked, and to DOING otherwise"
 
 ;; SQL
 
-(add-hook 'sql-mode-hook 'sql-indent-enable)
+(add-hook 'sql-mode-hook #'sql-indent-enable)
 
 (setq sql-postgres-login-params nil)
 
 ;; Capitalize keywords in SQL mode
-(add-hook 'sql-mode-hook 'sqlup-mode)
+(add-hook 'sql-mode-hook #'sqlup-mode)
 ;; Capitalize keywords in an interactive session (e.g. psql)
-(add-hook 'sql-interactive-mode-hook 'sqlup-mode)
+(add-hook 'sql-interactive-mode-hook #'sqlup-mode)
 ;; Set a global keyword to use sqlup on a region
-(global-set-key (kbd "C-c u") 'sqlup-capitalize-keywords-in-region)
+(global-set-key (kbd "C-c u") #'sqlup-capitalize-keywords-in-region)
 
 ;; Prettier
 
@@ -842,7 +872,7 @@ to TODO when none are ticked, and to DOING otherwise"
   (let ((magit-diff-buffer-in-current-repo
          (magit-mode-get-buffer 'magit-diff-mode)))
     (kill-buffer magit-diff-buffer-in-current-repo)))
-;;
+
 ;; When 'C-c C-c' is pressed in the magit commit message buffer,
 ;; delete the magit-diff buffer related to the current repo.
 ;;
