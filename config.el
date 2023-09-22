@@ -67,15 +67,7 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
-;; (global-subword-mode 1)
-
-(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
-
-(add-hook! 'text-mode (lambda () (auto-revert-mode 1)))
-
 (add-hook! 'doom-after-reload-hook (doom-load-envvars-file (expand-file-name "env" doom-local-dir) t))
-
-(setq which-key-idle-delay 0.5)
 
 ;; Separate work laptop -specific connection configurations to a separate file.
 (let ((sql-config-file "~/.config/doom/sql-connections.el"))
@@ -92,9 +84,6 @@ Colours are substituted as per `fancy-splash-template-colours'.")
       mac-command-modifier 'meta
       mac-function-modifier 'super
       select-enable-clipboard t)
-
-;; Treat all themes as safe.
-(setq custom-safe-themes t)
 
 ;; Tree-sitter
 
@@ -218,7 +207,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;;   (setq +lsp-company-backends
 ;;         '(:separate company-capf company-yasnippet company-dabbrev)))
 
-(setq yas-triggers-in-field t)
+;; (setq yas-triggers-in-field t)
 
 ;; (setq lsp-auto-guess-root t
 ;;       lsp-enable-symbol-highlighting t
@@ -289,6 +278,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Clojure settings
 
+(global-company-mode)
+
 (map! :mode clojure-mode
       :n "°" #'cider-eval-buffer
       :n "M-§" #'cider-eval-buffer
@@ -326,9 +317,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (aggressive-indent-mode 1)
   (yas-minor-mode 1)        ; for adding require/use/import statements
   ;; This choice of keybinding leaves cider-macroexpand-1 unbound
-  (cljr-add-keybindings-with-prefix "C-c C-m")
   (paredit-mode 1)
-  (subword-mode 1)
+  ;; (subword-mode 1)
   (flycheck-mode 1)
   (initialize-kondo))
 
@@ -352,7 +342,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
       treemacs-space-between-root-nodes nil
-      cider-font-lock-dynamically t
+      company-minimum-prefix-length 1
+      cider-font-lock-dynamically nil
       cider-repl-buffer-size-limit 1000
       lsp-lens-enable nil ; Show the "1 references" etc text above definitions.
       lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
@@ -708,7 +699,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Restclient settings
 
-(map! :mode resclient-mode
+(map! :mode restclient-mode
       :n "§" #'restclient-http-send-current)
 
 (org-babel-do-load-languages
