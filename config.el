@@ -203,21 +203,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; LSP
 
-;; (after! lsp-mode
-;;   (setq +lsp-company-backends
-;;         '(:separate company-capf company-yasnippet company-dabbrev)))
+(after! lsp-mode
+  (setq +lsp-company-backends
+        '(:separate company-capf company-yasnippet company-dabbrev)))
 
-;; (setq yas-triggers-in-field t)
-
-;; (setq lsp-auto-guess-root t
-;;       lsp-enable-symbol-highlighting t
-;;       lsp-signature-auto-activate t
-;;       lsp-signature-render-documentation t
-;;       lsp-enable-snippet t
-;;       lsp-headerline-breadcrumb-enable nil
-;;       lsp-file-watch-threshold 99999
-;;       flycheck-check-syntax-automatically '(save idle-change new-line mode-enabled)
-;;       ) ; Restore lsp-mode flycheck behavior.
+(setq yas-triggers-in-field t)
 
 ;; Evil
 
