@@ -411,9 +411,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Terminal
 
-;; Enable Fish autocompletion in `read-shell-command'.
-(advice-add #'shell-completion-vars :after #'fish-completion-mode)
-
 (after! eshell-mode
   (define-key eshell-mode-map (kbd "C-l") #'evil-window-right))
 
