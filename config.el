@@ -279,13 +279,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (map! :mode clojure-mode
       :n "°" #'cider-eval-buffer
-      :n "M-§" 'cider-eval-buffer
-      :n "§" 'cider-eval-defun-at-point
-      :n "Ö" 'cider-find-var
-      :n "q" 'cider-popup-buffer-quit
-      :n "K" 'cider-doc
-      :n "DEL" 'paredit-splice-sexp
-      :n "C-DEL" 'paredit-splice-sexp)
+      :n "M-§" #'cider-eval-buffer
+      :n "§" #'cider-eval-defun-at-point
+      :n "Ö" #'cider-find-var
+      :n "q" #'cider-popup-buffer-quit
+      :n "K" #'cider-doc
+      :n "DEL" #'paredit-splice-sexp
+      :n "C-DEL" #'paredit-splice-sexp)
 
 (defun cider-custom-test-ns-fn (ns)
   "Recognize namespaces (NS) with suffix -spec or -test as test namespaces."
@@ -332,10 +332,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'cider-repl-mode-hook #'my-cider-repl-mode-hook)
 (add-hook 'clojure-ts-mode-hook #'my-clojure-mode-hook)
 
-(add-hook 'clojure-mode-hook 'lsp)
-(add-hook 'clojurescript-mode-hook 'lsp)
-(add-hook 'clojure-ts-mode-hook 'lsp)
-(add-hook 'clojurescript-ts-mode-hook 'lsp)
+(add-hook 'clojure-mode-hook #'lsp)
+(add-hook 'clojurescript-mode-hook #'lsp)
+(add-hook 'clojure-ts-mode-hook #'lsp)
+(add-hook 'clojurescript-ts-mode-hook #'lsp)
 
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
@@ -473,20 +473,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "Kill elfeed buffer and the elfeed.org feed definition buffer."
   (interactive)
   (let ((buffer (get-buffer "elfeed.org")))
-    (print "jep jep")
     (kill-buffer buffer)
     (elfeed-kill-buffer)))
 
-;; (add-hook! elfeed-search-mode #'(lambda ()
-;;                                   (defun elfeed-kill-buffers ()
-;;                                     "Kill elfeed buffer and the elfeed.org feed definition buffer."
-;;                                     (interactive)
-;;                                     (let ((buffer (get-buffer "elfeed.org")))
-;;                                       (kill-buffer buffer)
-;;                                       (elfeed-kill-buffer)))
-;;                                   (elfeed-update)
-;;                                   (evil-local-set-key 'normal (kbd "q") #'elfeed-kill-buffers)))
-
+(add-hook! elfeed-search-mode #'elfeed-update)
 
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
@@ -565,7 +555,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
           :nm "RET" #'org-ref-elfeed-add
           :nm "n" #'elfeed-show-next
           :nm "N" #'elfeed-show-prev
-          :nm "p" #'elfeed-show-pdf
+          :nm "p" #'elfeed-show-prev
           :nm "+" #'elfeed-show-tag
           :nm "-" #'elfeed-show-untag
           :nm "s" #'elfeed-show-new-live-search
@@ -660,24 +650,27 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     :definition #'sly-edit-definition
     :documentation #'sly-describe-symbol))
 
-(add-hook 'lisp-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'lisp-mode-hook #'paredit-mode)
-(add-hook 'lisp-mode-hook #'flycheck-mode)
-(add-hook 'lisp-mode-hook #'clisp-mappings)
-(add-hook 'lisp-mode-hook #'aggressive-indent-mode)
+(map! :mode lisp-mode
+      :n "°" #'sly-compile-file
+      :n "§" #'sly-compile-defun
+      :n "DEL" #'paredit-splice-sexp
+      :n "C-DEL" #'paredit-splice-sexp)
+
+(add-hook! 'lisp-mode #'paredit-mode)
+(add-hook! 'lisp-mode #'flycheck-mode)
+(add-hook! 'lisp-mode #'aggressive-indent-mode)
 
 ;; Emacs Lisp settings
 
-(defun elisp-mappings ()
-  (evil-local-set-key 'normal (kbd "°") 'eval-buffer)
-  (evil-local-set-key 'normal (kbd "§") 'eval-defun)
-  (evil-local-set-key 'normal (kbd "C-DEL") 'paredit-splice-sexp)
-  (evil-local-set-key 'normal (kbd "DEL") 'paredit-splice-sexp))
+(map! :mode emacs-lisp-mode
+      :n "°" #'eval-buffer
+      :n "§" #'eval-defun
+      :n "DEL" #'paredit-splice-sexp
+      :n "C-DEL" #'paredit-splice-sexp)
 
-(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
-(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-(add-hook 'emacs-lisp-mode-hook #'elisp-mappings)
-(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+(add-hook! 'emacs-lisp-mode #'paredit-mode)
+(add-hook! 'emacs-lisp-mode #'flycheck-mode)
+(add-hook! 'emacs-lisp-mode #'aggressive-indent-mode)
 
 ;; Restclient settings
 
@@ -722,13 +715,21 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                         ;; (visual-line-mode 1) ;; make the lines in the buffer wrap around the edges of the screen.
                         (+word-wrap-mode)
                         (+org-pretty-mode)
-                        (org-mode-remaps)
                         (org-indent-mode)))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
 (after! org
-  (global-org-modern-mode))
+  (global-org-modern-mode)
+  (map! :map org-mode-map
+        :ni "M-l" #'org-metaright
+        :ni "M-h" #'org-metaleft
+        :ni "M-k" #'org-metaup
+        :ni "M-j" #'org-metadown
+        :ni "M-L" #'org-shiftmetaright
+        :ni "M-H" #'org-shiftmetaleft
+        :ni "M-K" #'org-shiftmetaup
+        :ni "M-J" #'org-shiftmetadown))
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "DOING(g)" "|" "DONE(d)" "KILL(k)")
