@@ -308,7 +308,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (yas-minor-mode 1)        ; for adding require/use/import statements
   ;; This choice of keybinding leaves cider-macroexpand-1 unbound
   (paredit-mode 1)
-  ;; (subword-mode 1)
   (flycheck-mode 1)
   (initialize-kondo))
 
@@ -327,7 +326,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook 'clojurescript-mode-hook #'lsp)
 (add-hook 'clojure-ts-mode-hook #'lsp)
 (add-hook 'clojurescript-ts-mode-hook #'lsp)
-
 
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
