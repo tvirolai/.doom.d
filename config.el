@@ -675,9 +675,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Emacs Lisp settings
 
-(add-hook! 'emacs-lisp-mode #'paredit-mode)
-(add-hook! 'emacs-lisp-mode #'flycheck-mode)
-(add-hook! 'emacs-lisp-mode #'aggressive-indent-mode)
+(add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
 (map! :mode emacs-lisp-mode
       :n "°" #'eval-buffer
