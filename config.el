@@ -23,7 +23,7 @@
 ;; (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 15)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
       doom-unicode-font (font-spec :family "JuliaMono"))
 
 (custom-set-faces!
@@ -58,6 +58,8 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (setq display-line-numbers-type 'relative)
 
 ;; General settings
+
+(add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 (add-to-list 'exec-path "/Users/tuomo.virolainen/bin")
 (add-to-list 'exec-path "/opt/homebrew/bin")
@@ -123,7 +125,7 @@ Colours are substituted as per `fancy-splash-template-colours'.")
       '(
         ;; (yaml-mode . yaml-ts-mode)
         (bash-mode . bash-ts-mode)
-        (clojure-ts-mode . clojure-mode)
+        ;; (clojure-ts-mode . clojure-mode)
         (clojurescript--ts-mode . clojurescript-mode)
         (js2-mode . js-ts-mode)
         (typescript-mode . typescript-ts-mode)
@@ -300,11 +302,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; (with-eval-after-load 'clojurescript-ts-mode
 ;;   (add-to-list 'lsp-language-id-configuration '(clojurescript-ts-mode . "clojurescript")))
 
-(with-eval-after-load 'clojure-mode
-  (add-hook 'clojure-ts-mode-hook #'cider-mode)
-  (add-hook 'clojure-ts-mode-hook #'clojure-mode-variables)
-  (setq clojure-ts-mode-map clojure-mode-map)
-  (setq clojurescript-ts-mode-map clojurescript-mode-map))
+;; (with-eval-after-load 'clojure-mode
+;;   (add-hook 'clojure-ts-mode-hook #'cider-mode)
+;;   (add-hook 'clojure-ts-mode-hook #'clojure-mode-variables)
+;;   (setq clojure-ts-mode-map clojure-mode-map)
+;;   (setq clojurescript-ts-mode-map clojurescript-mode-map))
 
 (defun initialize-kondo ()
   (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
@@ -328,12 +330,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 (add-hook 'cider-repl-mode-hook #'my-cider-repl-mode-hook)
-(add-hook 'clojure-ts-mode-hook #'my-clojure-mode-hook)
+;; (add-hook 'clojure-ts-mode-hook #'my-clojure-mode-hook)
 
 (add-hook 'clojure-mode-hook #'lsp)
 (add-hook 'clojurescript-mode-hook #'lsp)
-(add-hook 'clojure-ts-mode-hook #'lsp)
-(add-hook 'clojurescript-ts-mode-hook #'lsp)
+;; (add-hook 'clojure-ts-mode-hook #'lsp)
+;; (add-hook 'clojurescript-ts-mode-hook #'lsp)
 
 (setq gc-cons-threshold (* 100 1024 1024)
       read-process-output-max (* 1024 1024)
@@ -392,6 +394,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (after! eshell-mode
   (define-key eshell-mode-map (kbd "C-l") #'evil-window-right))
+
+(setq eshell-prefer-lisp-functions t)
 
 ;; https://github.com/suonlight/multi-vterm#for-evil-users
 (use-package multi-vterm
