@@ -405,39 +405,23 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                       (setq-local evil-insert-state-cursor 'box)
                       (evil-insert-state)))
 
-  (define-key vterm-mode-map (kbd "<C-backspace>") (lambda () (interactive) (vterm-send-key (kbd "C-w"))))
-  (define-key vterm-mode-map (kbd "<M-backspace>") (lambda () (interactive) (vterm-send-key (kbd "C-w"))))
   (setq vterm-max-scrollback 100000)
-  (define-key vterm-mode-map [return]                      #'vterm-send-return)
-
   (setq vterm-keymap-exceptions nil)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
-  (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
-  (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
-  (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
 
-(setq eshell-prefer-lisp-functions t)
+  (map! :map vterm-mode-map
+        :i "<C-backspace>" #'(lambda () (interactive) (vterm-send-key (kbd "C-w")))
+        :i "<M-backspace>" #'(lambda () (interactive) (vterm-send-key (kbd "C-w")))
+        :i "RET" #'vterm-send-return
+        :gnvi "C-k" #'evil-window-up
+        :gnvi "C-j" #'evil-window-down
+        :gnvi "C-l" #'evil-window-right
+        :gnvi "C-h" #'evil-window-left
+        :n ",c" #'multivterm
+        :n ",n" #'multi-vterm-next
+        :n ",p" #'multi-vterm-prev
+        :n "i" #'evil-insert-resume
+        :n "o" #'evil-insert-resume
+        :n "<return>" #'evil-insert-resume))
 
 (setq vterm-kill-buffer-on-exit t)
 
