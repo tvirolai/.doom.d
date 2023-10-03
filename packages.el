@@ -60,7 +60,6 @@
 (package! prettier)
 (package! jet)
 (package! git-link)
-(package! aggressive-indent)
 (package! ef-themes)
 (package! exec-path-from-shell)
 (package! lsp-treemacs)
@@ -68,7 +67,6 @@
 (package! org-modern)
 (package! org-appear
   :recipe (:host github :repo "awth13/org-appear"))
-(package! mixed-pitch)
 (package! multi-vterm)
 (package! visual-fill-column)
 (package! adoc-mode)

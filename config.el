@@ -314,7 +314,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (defun my-clojure-mode-hook ()
   (clj-refactor-mode 1)
-  (aggressive-indent-mode 1)
   (yas-minor-mode 1)        ; for adding require/use/import statements
   ;; This choice of keybinding leaves cider-macroexpand-1 unbound
   (paredit-mode 1)
@@ -659,13 +658,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-hook! 'lisp-mode #'paredit-mode)
 (add-hook! 'lisp-mode #'flycheck-mode)
-(add-hook! 'lisp-mode #'aggressive-indent-mode)
 
 ;; Emacs Lisp settings
 
 (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
 (map! :mode emacs-lisp-mode
       :n "°" #'eval-buffer
