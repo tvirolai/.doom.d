@@ -45,11 +45,6 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-dracula)
 
-(setq +zen-mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode rst-mode adoc-mode))
-
-(dolist (hook +zen-mixed-pitch-modes)
-  (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode))
-
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
 
@@ -263,7 +258,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       :n "Q" #'kill-buffer-and-window
       :n "SPC z" #'recentf-open-files
       :n "C--" nil
-      :n "C-M--" #'ibuffer)
+      :gnvi "C-M--" #'ibuffer)
 
 (map! :g "M-n" #'make-frame
       :g "M-q" #'doom/delete-frame-with-prompt
@@ -401,8 +396,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :after vterm
   :config (add-hook 'vterm-mode-hook
                     (lambda ()
-                      (setq-local evil-insert-state-cursor 'box)
-                      (evil-insert-state)))
+                      ;; (setq-local evil-insert-state-cursor 'box)
+                      ;; (evil-emacs-state)
+                      (evil-insert-state)
+                      ))
 
   (setq vterm-max-scrollback 100000)
   (setq vterm-keymap-exceptions nil)

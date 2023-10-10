@@ -30,7 +30,8 @@
      (byte-compile-docstring-max-column 100)))
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-agenda-files
-   '("/Users/tuomo.virolainen/Dropbox/org/NV2023kevät.org" "/Users/tuomo.virolainen/Dropbox/org/elfeed.org" "/Users/tuomo.virolainen/Dropbox/org/pyörä.org" "/Users/tuomo.virolainen/Dropbox/org/talo.org" "/Users/tuomo.virolainen/Dropbox/org/vartijantupa.org")))
+   '("/Users/tuomo.virolainen/Dropbox/org/NV2023kevät.org" "/Users/tuomo.virolainen/Dropbox/org/elfeed.org" "/Users/tuomo.virolainen/Dropbox/org/pyörä.org" "/Users/tuomo.virolainen/Dropbox/org/talo.org" "/Users/tuomo.virolainen/Dropbox/org/vartijantupa.org"))
+ '(package-selected-packages '(evil-visual-mark-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
