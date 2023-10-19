@@ -70,5 +70,4 @@
 (package! multi-vterm)
 (package! visual-fill-column)
 (package! adoc-mode)
-(unpin! clojure-mode)
-(unpin! cider)
+(unpin! cider clojure-mode)

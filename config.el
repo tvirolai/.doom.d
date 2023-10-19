@@ -23,7 +23,7 @@
 ;; (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 13)
       doom-unicode-font (font-spec :family "JuliaMono"))
 
 (custom-set-faces!
@@ -64,7 +64,11 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
+(setq global-visual-line-mode t)
+
 (add-hook! 'doom-after-reload-hook (doom-load-envvars-file (expand-file-name "env" doom-local-dir) t))
+
+(setq kill-ring-max 1000)
 
 ;; Separate work laptop -specific connection configurations to a separate file.
 (let ((sql-config-file "~/.config/doom/sql-connections.el"))
@@ -77,7 +81,7 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
 
-(setq mac-option-modifier 'nil
+(setq mac-option-modifier 'meta
       mac-command-modifier 'meta
       mac-function-modifier 'super
       select-enable-clipboard t)
@@ -87,8 +91,7 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (use-package! tree-sitter
   :hook (prog-mode . turn-on-tree-sitter-mode)
   :hook (tree-sitter-after-on . tree-sitter-hl-mode)
-  :config
-  (require 'tree-sitter-langs)
+  :config (require 'tree-sitter-langs)
   ;; This makes every node a link to a section of code
   (setq tree-sitter-debug-jump-buttons t
         ;; and this highlights the entire sub tree in your code
@@ -117,16 +120,16 @@ Colours are substituted as per `fancy-splash-template-colours'.")
         (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (setq major-mode-remap-alist
-      '(
-        ;; (yaml-mode . yaml-ts-mode)
-        (bash-mode . bash-ts-mode)
+      '((yaml-mode . yaml-ts-mode)
+        (sh-mode . bash-ts-mode)
         ;; (clojure-ts-mode . clojure-mode)
-        (clojurescript--ts-mode . clojurescript-mode)
+        ;; (clojurescript-ts-mode . clojurescript-mode)
         (js2-mode . js-ts-mode)
         (typescript-mode . typescript-ts-mode)
         (json-mode . json-ts-mode)
         (css-mode . css-ts-mode)
         ;; (markdown-mode . markdown-ts-mode)
+        ;; (gfm-mode . markdown-ts-mode)
         ;; (web-mode . html-ts-mode)
         (python-mode . python-ts-mode)))
 
@@ -313,6 +316,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   ;; This choice of keybinding leaves cider-macroexpand-1 unbound
   (paredit-mode 1)
   (flycheck-mode 1)
+  (tree-sitter-hl-mode -1)
   (initialize-kondo))
 
 (defun my-cider-repl-mode-hook ()
@@ -358,9 +362,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    (PATCH 2)
    (PUT 2)))
 
+;; Python
+
+(add-hook! 'python-ts-mode-hook #'lsp)
+
+;; Bash
+
+(add-hook! 'bash-ts-mode-hook #'turn-off-smartparens-mode)
+(add-hook! 'sh-mode-hook #'turn-off-smartparens-mode)
+
 ;; TypeScript etc.
 
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-ts-mode))
 
 (defun eslint-fix-file ()
   "Run the buffer through eslint --fix."
@@ -396,10 +409,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :after vterm
   :config (add-hook 'vterm-mode-hook
                     (lambda ()
-                      ;; (setq-local evil-insert-state-cursor 'box)
-                      ;; (evil-emacs-state)
-                      (evil-insert-state)
-                      ))
+                      (setq-local evil-insert-state-cursor 'box)
+                      (evil-insert-state)))
 
   (setq vterm-max-scrollback 100000)
   (setq vterm-keymap-exceptions nil)
