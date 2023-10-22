@@ -71,3 +71,4 @@
 (package! visual-fill-column)
 (package! adoc-mode)
 (unpin! cider clojure-mode)
+(package! python-black)

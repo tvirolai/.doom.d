@@ -23,7 +23,7 @@
 ;; (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 13)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-unicode-font (font-spec :family "JuliaMono"))
 
 (custom-set-faces!
@@ -65,6 +65,7 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
 (setq global-visual-line-mode t)
+(global-auto-revert-mode t)
 
 (add-hook! 'doom-after-reload-hook (doom-load-envvars-file (expand-file-name "env" doom-local-dir) t))
 
@@ -81,10 +82,20 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
 
-(setq mac-option-modifier 'meta
+(setq mac-option-modifier 'nil
       mac-command-modifier 'meta
       mac-function-modifier 'super
       select-enable-clipboard t)
+
+;; Always load newest byte code
+(setq load-prefer-newer t)
+
+;; reduce the frequency of garbage collection by making it happen on
+;; each 50MB of allocated data (the default is on every 0.76MB)
+(setq gc-cons-threshold 50000000)
+
+;; warn when opening files bigger than 100MB
+(setq large-file-warning-threshold 100000000)
 
 ;; Tree-sitter
 
@@ -155,28 +166,6 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (after! tree-sitter
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-tree-sitter-mode . tsx)))
-
-(setq org-use-property-inheritance t)
-
-(setq org-roam-directory (expand-file-name "roam" org-directory))
-
-(setq org-roam-completion-everywhere t)
-
-(after! org-roam
-  (org-roam-db-sync)
-  (setq org-roam-capture-templates
-        `(("n" "default note" plain "%?"
-           :if-new
-           (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                      "#+title: ${title}\n#+date: %t\n#+filetags: \n\n ")
-           :unnarrowed t)
-          ("b" "books" plain "%?"
-           :if-new
-           (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                      "#+author: %^{author}\n#+title: ${title}\n#+subtitle: \n#+date: %t\n#+origin: %^{origin}\n#+category: \n#+filetags: :kirjat:\n\n ")
-           :unnarrowed t))))
-
-(setq org-superstar-headline-bullets-list '("› "))
 
 (setq history-length 25)
 
@@ -365,6 +354,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Python
 
 (add-hook! 'python-ts-mode-hook #'lsp)
+(add-hook! 'python-ts-mode-hook #'python-black-on-save-mode)
+
+(setq lsp-pylsp-plugins-flake8-max-line-length 120)
 
 ;; Bash
 
@@ -693,6 +685,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Org mode
 
 (setq org-ellipsis " ▾")
+(setq org-superstar-headline-bullets-list '("› "))
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
@@ -804,6 +797,24 @@ to TODO when none are ticked, and to DOING otherwise"
 
 (add-hook 'org-checkbox-statistics-hook #'ct/org-summary-checkbox-cookie)
 
+(setq org-use-property-inheritance t)
+
+(setq org-roam-completion-everywhere t)
+
+(after! org-roam
+  (org-roam-db-sync)
+  (setq org-roam-capture-templates
+        `(("n" "default note" plain "%?"
+           :if-new
+           (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: ${title}\n#+date: %t\n#+filetags: \n\n ")
+           :unnarrowed t)
+          ("b" "books" plain "%?"
+           :if-new
+           (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+author: %^{author}\n#+title: ${title}\n#+subtitle: \n#+date: %t\n#+origin: %^{origin}\n#+category: \n#+filetags: :kirjat:\n\n ")
+           :unnarrowed t))))
+
 ;; SQL
 
 (add-hook 'sql-mode-hook #'sql-indent-enable)
@@ -830,6 +841,8 @@ to TODO when none are ticked, and to DOING otherwise"
       '(emacs-lisp-mode  ; elisp's mechanisms are good enough
         sql-mode         ; sqlformat is currently broken
         tex-mode         ; latexindent is broken
+        python-ts-mode   ; delegate this to Black instead
+        python-mode
         latex-mode))
 
 (setq prettier-inline-errors-flag t)
