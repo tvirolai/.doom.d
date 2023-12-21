@@ -1,8 +1,5 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Tuomo Virolainen"
@@ -10,18 +7,6 @@
 
 ;; Appearance
 
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-;;       doom-variable-pitch-font (font-spec :family "Fira Code" :size 12 :weight 'regular))
 (setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-unicode-font (font-spec :family "JuliaMono"))
@@ -40,13 +25,18 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (setq fancy-splash-image (expand-file-name "emacs-e-template.svg" fancy-splash-image-directory))
 
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-dracula)
 
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
+
+(golden-ratio-mode 1)
+
+;; Make golden ratio's window resizing work with evil commands too
+(setq golden-ratio-extra-commands
+      (append golden-ratio-extra-commands
+              '(evil-window-down evil-window-up evil-window-left evil-window-right)))
+
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -81,6 +71,8 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org/")
+
+(setq projectile-project-search-path '("~/dev"))
 
 (setq mac-option-modifier 'nil
       mac-command-modifier 'meta
@@ -180,6 +172,8 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 ;; Revert Dired and other buffers
 (setq global-auto-revert-non-file-buffers t)
 
+(add-hook! dired-mode-hook #'dired-revert)
+
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
 In Delete Selection mode, if the mark is active, just deactivate it;
@@ -210,10 +204,16 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Evil
 
+(setq evil-shift-width 2)
+
+(setq evil-undo-system 'undo-redo)
+
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 
 (setq evil-ex-substitute-global t)
+
+;; When we overwrite text in visual mode, don’t add to the kill ring.
 (setq evil-kill-on-visual-paste nil)
 
 (setq evil-want-fine-undo nil)
@@ -321,6 +321,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-hook 'clojure-mode-hook #'lsp)
 (add-hook 'clojurescript-mode-hook #'lsp)
+(add-hook 'clojurescript-mode-hook #'locally-defer-font-lock)
 ;; (add-hook 'clojure-ts-mode-hook #'lsp)
 ;; (add-hook 'clojurescript-ts-mode-hook #'lsp)
 
@@ -361,7 +362,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Bash
 
 (add-hook! 'bash-ts-mode-hook #'turn-off-smartparens-mode)
+(add-hook! 'bash-ts-mode-hook #'lsp)
 (add-hook! 'sh-mode-hook #'turn-off-smartparens-mode)
+(add-hook! 'sh-mode-hook #'lsp)
 
 ;; TypeScript etc.
 
@@ -384,10 +387,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; EWW
 
 ;; Disable images
-;; (setq shr-inhibit-images t)
+(setq shr-inhibit-images t)
 ;; (setq shr-use-fonts nil)
 
 (add-hook 'eww-mode-hook #'visual-line-mode)
+
+(map! :map eww-mode-map
+      :n "H" #'evil-window-top
+      :n "L" #'evil-window-bottom)
 
 ;; Terminal
 
@@ -401,8 +408,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :after vterm
   :config (add-hook 'vterm-mode-hook
                     (lambda ()
-                      (setq-local evil-insert-state-cursor 'box)
-                      (evil-insert-state)))
+                      (evil-insert-state)
+                      ;; (evil-emacs-state)
+                      ))
 
   (setq vterm-max-scrollback 100000)
   (setq vterm-keymap-exceptions nil)
@@ -415,11 +423,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         :gnvi "C-j" #'evil-window-down
         :gnvi "C-l" #'evil-window-right
         :gnvi "C-h" #'evil-window-left
-        :n ",c" #'multivterm
+        :n ",c" #'multi-vterm
         :n ",n" #'multi-vterm-next
         :n ",p" #'multi-vterm-prev
-        :n "i" #'evil-insert-resume
-        :n "o" #'evil-insert-resume
         :n "<return>" #'evil-insert-resume))
 
 (setq vterm-kill-buffer-on-exit t)
@@ -519,6 +525,40 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                       :foreground 'nil
                       :weight 'light)
 
+  (map! :map elfeed-search-mode-map
+        :after elfeed-search
+        [remap kill-this-buffer] "q"
+        [remap kill-buffer] "q"
+        :n doom-leader-key nil
+        :n "q" #'elfeed-kill-buffers
+        :n "e" #'elfeed-update
+        :n "r" #'elfeed-search-untag-all-unread
+        :n "u" #'elfeed-search-tag-all-unread
+        :n "s" #'elfeed-search-live-filter
+        :n "RET" #'elfeed-search-show-entry
+        :n "+" #'elfeed-search-tag-all
+        :n "-" #'elfeed-search-untag-all
+        :n "S" #'elfeed-search-set-filter
+        :n "b" #'elfeed-search-browse-url
+        :n "y" #'elfeed-search-yank)
+
+  (map! :map elfeed-show-mode-map
+        :after elfeed-show
+        [remap kill-this-buffer] "q"
+        [remap kill-buffer] "q"
+        :n doom-leader-key nil
+
+        :nm "q" #'+rss/delete-pane
+        :nm "o" #'ace-link-elfeed
+        :nm "RET" #'org-ref-elfeed-add
+        :nm "n" #'elfeed-show-next
+        :nm "N" #'elfeed-show-prev
+        :nm "p" #'elfeed-show-prev
+        :nm "+" #'elfeed-show-tag
+        :nm "-" #'elfeed-show-untag
+        :nm "s" #'elfeed-show-new-live-search
+        :nm "y" #'elfeed-show-yank)
+
   (defadvice! +rss-elfeed-wrap-h-nicer ()
     "Enhances an elfeed entry's readability by wrapping it to a width of
 `fill-column' and centering it with `visual-fill-column-mode'."
@@ -531,41 +571,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
           (inhibit-modification-hooks t))
       (visual-fill-column-mode)
       ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
-      (set-buffer-modified-p nil))
-
-    (map! :map elfeed-search-mode-map
-          :after elfeed-search
-          [remap kill-this-buffer] "q"
-          [remap kill-buffer] "q"
-          :n doom-leader-key nil
-          :n "q" #'elfeed-kill-buffers
-          :n "e" #'elfeed-update
-          :n "r" #'elfeed-search-untag-all-unread
-          :n "u" #'elfeed-search-tag-all-unread
-          :n "s" #'elfeed-search-live-filter
-          :n "RET" #'elfeed-search-show-entry
-          :n "+" #'elfeed-search-tag-all
-          :n "-" #'elfeed-search-untag-all
-          :n "S" #'elfeed-search-set-filter
-          :n "b" #'elfeed-search-browse-url
-          :n "y" #'elfeed-search-yank)
-
-    (map! :map elfeed-show-mode-map
-          :after elfeed-show
-          [remap kill-this-buffer] "q"
-          [remap kill-buffer] "q"
-          :n doom-leader-key nil
-
-          :nm "q" #'+rss/delete-pane
-          :nm "o" #'ace-link-elfeed
-          :nm "RET" #'org-ref-elfeed-add
-          :nm "n" #'elfeed-show-next
-          :nm "N" #'elfeed-show-prev
-          :nm "p" #'elfeed-show-prev
-          :nm "+" #'elfeed-show-tag
-          :nm "-" #'elfeed-show-untag
-          :nm "s" #'elfeed-show-new-live-search
-          :nm "y" #'elfeed-show-yank))
+      (set-buffer-modified-p nil)))
 
   (defun +rss/elfeed-search-print-entry (entry)
     "Print ENTRY to the buffer."
@@ -684,13 +690,46 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Org mode
 
+(custom-set-faces!
+  '(outline-1 :weight extra-bold)
+  '(outline-2 :weight bold)
+  '(outline-3 :weight bold)
+  '(outline-4 :weight semi-bold)
+  '(outline-5 :weight semi-bold)
+  '(outline-6 :weight semi-bold)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+
 (setq org-ellipsis " ▾")
 (setq org-superstar-headline-bullets-list '("› "))
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
 (setq org-cycle-emulate-tab nil)
-(setq org-startup-folded 'show2levels)
+(setq org-startup-folded 'nofold)
+
+(custom-set-faces!
+  '(org-document-title :height 1.2))
+
+(defadvice! +org-init-appearance-h--no-ligatures-a ()
+  :after #'+org-init-appearance-h
+  (set-ligatures! 'org-mode nil)
+  (set-ligatures! 'org-mode
+                  :list_property "::"
+                  :em_dash       "---"
+                  :ellipsis      "..."
+                  :arrow_right   "->"
+                  :arrow_left    "<-"
+                  :arrow_lr      "<->"
+                  :properties    ":PROPERTIES:"
+                  :end           ":END:"
+                  :priority_a    "[#A]"
+                  :priority_b    "[#B]"
+                  :priority_c    "[#C]"
+                  :priority_d    "[#D]"
+                  :priority_e    "[#E]"))
+
+(setq doom-themes-org-fontify-special-tags nil)
 
 (use-package! visual-fill-column
   :custom
@@ -705,6 +744,14 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                         (org-indent-mode)))
 
 (global-set-key (kbd "C-c c") 'org-capture)
+
+(defun locally-defer-font-lock ()
+  "Set jit-lock defer and stealth, when buffer is over a certain size."
+  (when (> (buffer-size) 50000)
+    (setq-local jit-lock-defer-time 0.05
+                jit-lock-stealth-time 1)))
+
+(add-hook 'org-mode-hook #'locally-defer-font-lock)
 
 (after! org
   (global-org-modern-mode)
@@ -809,22 +856,30 @@ to TODO when none are ticked, and to DOING otherwise"
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                       "#+title: ${title}\n#+date: %t\n#+filetags: \n\n ")
            :unnarrowed t)
-          ("b" "books" plain "%?"
+          ("b" "book" plain "%?"
            :if-new
            (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                      "#+author: %^{author}\n#+title: ${title}\n#+subtitle: \n#+date: %t\n#+origin: %^{origin}\n#+category: \n#+filetags: :kirjat:\n\n ")
+                      "#+author: ${author}\n#+title: ${title}\n#+subtitle: \n#+date: %t\n#+origin: ${origin}\n#+category: \n#+filetags: :kirjat:\n\n")
+           :unnarrowed t)
+          ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+           :unnarrowed t)
+          ("m" "meeting" plain "%?"
+           :if-new
+           (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: %^{title}\n#+present: %^{present} \n#+date: %t\n#+category: \n#+filetags: :työ:\n\n ")
            :unnarrowed t))))
 
 ;; SQL
 
-(add-hook 'sql-mode-hook #'sql-indent-enable)
-
 (setq sql-postgres-login-params nil)
 
+(add-hook! 'sql-mode-hook #'sql-indent-enable)
+
 ;; Capitalize keywords in SQL mode
-(add-hook 'sql-mode-hook #'sqlup-mode)
+(add-hook! 'sql-mode-hook #'sqlup-mode)
 ;; Capitalize keywords in an interactive session (e.g. psql)
-(add-hook 'sql-interactive-mode-hook #'sqlup-mode)
+(add-hook! 'sql-interactive-mode-hook #'sqlup-mode)
 ;; Set a global keyword to use sqlup on a region
 (global-set-key (kbd "C-c u") #'sqlup-capitalize-keywords-in-region)
 

@@ -50,7 +50,7 @@
        vi-tilde-fringe
        ;;window-select
        workspaces
-       zen
+       ;; zen
 
        :editor
        (evil +everywhere)
@@ -136,20 +136,20 @@
        ;;hy
        ;;idris
        json
-       ;; (java +meghanada)
+       (java +meghanada)
        javascript
        ;;julia
        kotlin
        latex
        ;;lean
        ;;ledger
-       lua
+       ;; lua
        markdown
        ;;nim
        ;;nix
        ;; ocaml
        (org +roam2 +pretty +journal +present)
-       ;;php
+       ;; php
        ;;plantuml
        ;; purescript
        (python +lsp)
