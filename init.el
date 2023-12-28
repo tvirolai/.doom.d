@@ -148,7 +148,7 @@
        ;;nim
        ;;nix
        ;; ocaml
-       (org +roam2 +pretty +journal +present)
+       (org +roam2 +pretty +present)
        ;; php
        ;;plantuml
        ;; purescript

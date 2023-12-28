@@ -30,12 +30,21 @@
      (byte-compile-docstring-max-column 100)))
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-agenda-files
-   '("/Users/tuomo.virolainen/Dropbox/org/NV2023kevät.org" "/Users/tuomo.virolainen/Dropbox/org/elfeed.org" "/Users/tuomo.virolainen/Dropbox/org/pyörä.org" "/Users/tuomo.virolainen/Dropbox/org/talo.org" "/Users/tuomo.virolainen/Dropbox/org/vartijantupa.org"))
+   '("/Users/tuomo.virolainen/Dropbox/org/NV2023kevät.org" "/Users/tuomo.virolainen/Dropbox/org/elfeed.org" "/Users/tuomo.virolainen/Dropbox/org/pyörä.org" "/Users/tuomo.virolainen/Dropbox/org/talo.org" "/Users/tuomo.virolainen/Dropbox/org/vartijantupa.org" "/Users/tuomo.virolainen/Library/CloudStorage/Dropbox/org/journal/2023-12-01.org"))
  '(package-selected-packages '(evil-visual-mark-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(doom-modeline-buffer-modified ((t (:foreground "orange")))))
+ '(doom-modeline-buffer-modified ((t (:foreground "orange"))))
+ '(org-document-title ((t (:height 1.2))))
+ '(outline-1 ((t (:weight extra-bold))))
+ '(outline-2 ((t (:weight bold))))
+ '(outline-3 ((t (:weight bold))))
+ '(outline-4 ((t (:weight semi-bold))))
+ '(outline-5 ((t (:weight semi-bold))))
+ '(outline-6 ((t (:weight semi-bold))))
+ '(outline-8 ((t (:weight semi-bold))))
+ '(outline-9 ((t (:weight semi-bold)))))
 (put 'customize-group 'disabled nil)

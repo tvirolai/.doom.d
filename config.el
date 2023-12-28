@@ -7,8 +7,8 @@
 
 ;; Appearance
 
-(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
+(setq doom-font (font-spec :family "SF Mono" :size 14 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 15)
       doom-unicode-font (font-spec :family "JuliaMono"))
 
 (custom-set-faces!
@@ -30,6 +30,8 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
 
+;; Golden Ratio
+
 (golden-ratio-mode 1)
 
 ;; Make golden ratio's window resizing work with evil commands too
@@ -37,6 +39,8 @@ Colours are substituted as per `fancy-splash-template-colours'.")
       (append golden-ratio-extra-commands
               '(evil-window-down evil-window-up evil-window-left evil-window-right)))
 
+(setq golden-ratio-exclude-buffer-names
+      '("*cider-doc*"))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -88,6 +92,10 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
+
+(setq-default indent-tabs-mode nil        ; Stop using tabs to indent
+              tab-always-indent 'complete ; Indent first then try completions
+              tab-width 4)                ; Smaller width for tab characters
 
 ;; Tree-sitter
 
@@ -768,20 +776,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq org-todo-keywords
         '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "DOING(g)" "|" "DONE(d)" "KILL(k)")
           (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
-          (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
-
-  ;; +journal
-  (setq org-journal-dir (concat org-directory "journal/")
-        org-journal-file-type 'monthly
-        org-journal-encrypt-journal t
-        org-journal-enable-cache t
-        org-journal-file-format "%Y%m%d.org"
-        org-journal-file-format "%Y-%m-%d.org"
-        org-journal-enable-agenda-integration t
-        org-journal-carryover-items "TODO=\"TODO\"|TODO=\"PROJ\"|TODO=\"STRT\"|TODO=\"WAIT\"|TODO=\"HOLD\"|TODO=\"[ ]\"|TODO=\"DOING\""
-        org-journal-date-format "%a, %Y-%m-%d"
-        org-journal-date-prefix "#+TITLE: ")
-  (remove-hook 'calendar-today-visible-hook 'org-journal-mark-entries))
+          (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
 
 ;; SOURCE: https://christiantietze.de/posts/2021/02/emacs-org-todo-doing-done-checkbox-cycling/
 (defun org-todo-if-needed (state)
