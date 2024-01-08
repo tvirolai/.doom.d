@@ -136,7 +136,7 @@
        ;;hy
        ;;idris
        json
-       (java +meghanada)
+       (java +lsp)
        javascript
        ;;julia
        kotlin

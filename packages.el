@@ -72,5 +72,4 @@
 (package! adoc-mode)
 (unpin! cider clojure-mode)
 (package! python-black)
-(package! denote)
-(package! golden-ratio)
+(package! evil-owl)

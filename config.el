@@ -30,21 +30,11 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
 
-;; Golden Ratio
-
-(golden-ratio-mode 1)
-
-;; Make golden ratio's window resizing work with evil commands too
-(setq golden-ratio-extra-commands
-      (append golden-ratio-extra-commands
-              '(evil-window-down evil-window-up evil-window-left evil-window-right)))
-
-(setq golden-ratio-exclude-buffer-names
-      '("*cider-doc*"))
-
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
+
+(setq projectile-enable-caching nil)
 
 ;; General settings
 
@@ -64,6 +54,8 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (add-hook! 'doom-after-reload-hook (doom-load-envvars-file (expand-file-name "env" doom-local-dir) t))
 
 (setq kill-ring-max 1000)
+
+(setq which-key-idle-delay 0.5)
 
 ;; Separate work laptop -specific connection configurations to a separate file.
 (let ((sql-config-file "~/.config/doom/sql-connections.el"))
@@ -226,6 +218,17 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (setq evil-want-fine-undo nil)
 
+(use-package evil-owl
+  :config
+  (setq evil-owl-max-string-length 500)
+  (setq evil-owl-idle-delay 0.5)
+  (add-to-list 'display-buffer-alist
+               '("*evil-owl*"
+                 (display-buffer-in-side-window)
+                 (side . bottom)
+                 (window-height . 0.3)))
+  (evil-owl-mode))
+
 (map! :g "C-s" #'save-buffer)
 (map! :after evil :gnvi "C-å" #'consult-line)
 
@@ -254,6 +257,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       :n "C-ä" #'split-window-right
       :n "ö" #'save-buffer
       :n "Ä" #'+vertico/project-search
+      :n "å" #'yank-from-kill-ring
       :n "¨" #'evil-ex-search-forward
       :n "Q" #'kill-buffer-and-window
       :n "SPC z" #'recentf-open-files
