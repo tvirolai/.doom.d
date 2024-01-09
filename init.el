@@ -119,7 +119,7 @@
        ;;coq
        ;;crystal
        ;;csharp
-       data
+       (data +lsp +tree-sitter)
        ;;(dart +flutter)
        ;;elixir
        ;;elm
@@ -132,10 +132,10 @@
        ;;fstar
        ;;gdscript
        ;;(go +lsp)
-       (haskell +dante +lsp)
+       (haskell +dante +lsp +tree-sitter)
        ;;hy
        ;;idris
-       json
+       (json +lsp +tree-sitter)
        (java +lsp)
        javascript
        ;;julia
@@ -148,11 +148,11 @@
        ;;nim
        ;;nix
        ;; ocaml
-       (org +roam2 +pretty +present)
+       (org +roam2 +pretty +present +tree-sitter)
        ;; php
        ;;plantuml
        ;; purescript
-       (python +lsp)
+       (python +lsp +tree-sitter)
        ;;qt
        ;;racket
        ;;raku
@@ -162,13 +162,13 @@
                                         ; (rust +lsp)
        ;;scala
        ;;(scheme +guile)
-       (sh +lsp)
+       (sh +lsp +tree-sitter)
        ;;sml
        ;;solidity
        ;;swift
        ;;terra
-       web
-       yaml
+       (web +lsp +tree-sitter)
+       (yaml +lsp +tree-sitter)
        ;;zig
 
        :email

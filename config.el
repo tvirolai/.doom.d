@@ -7,8 +7,8 @@
 
 ;; Appearance
 
-(setq doom-font (font-spec :family "SF Mono" :size 14 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 15)
+(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-unicode-font (font-spec :family "JuliaMono"))
 
 (custom-set-faces!
@@ -29,6 +29,18 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
+
+;; Show info about the file under editing, see: 'https://github.com/Artawower/file-info.el'
+(use-package file-info
+  :ensure t
+  :bind (("C-c d" . 'file-info-show))
+  :config
+  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
+                                     :internal-border-width 2
+                                     :internal-border-color "#61AFEF"
+                                     :left-fringe 16
+                                     :right-fringe 16)))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -56,6 +68,8 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (setq kill-ring-max 1000)
 
 (setq which-key-idle-delay 0.5)
+
+(yank-indent-mode 1)
 
 ;; Separate work laptop -specific connection configurations to a separate file.
 (let ((sql-config-file "~/.config/doom/sql-connections.el"))
@@ -701,6 +715,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (after! restclient (require 'gnutls))
 
 ;; Org mode
+
+(setq org-default-notes-file
+      (concat org-directory "inbox.org"))
+
+(setq org-capture-templates
+      '(("f" "Fleeting note" item
+         (file+headline org-default-notes-file "Notes")
+         "- %?"
+         :jump-to-captured t)
+        ("t" "New task" entry
+         (file+headline org-default-notes-file "Tasks")
+         "* TODO %i%?")))
 
 (custom-set-faces!
   '(outline-1 :weight extra-bold)
