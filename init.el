@@ -162,6 +162,7 @@
                                         ; (rust +lsp)
        ;;scala
        ;;(scheme +guile)
+       (sql +lsp +tree-sitter)
        (sh +lsp +tree-sitter)
        ;;sml
        ;;solidity

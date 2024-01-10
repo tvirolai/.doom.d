@@ -80,7 +80,7 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/Dropbox/org/")
+(setq org-directory "~/Dropbox/org")
 
 (setq projectile-project-search-path '("~/dev"))
 
@@ -716,8 +716,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Org mode
 
-(setq org-default-notes-file
-      (concat org-directory "inbox.org"))
+(setq org-default-notes-file (concat org-directory "/inbox.org"))
+
+(setq org-agenda-files (list org-default-notes-file))
 
 (setq org-capture-templates
       '(("f" "Fleeting note" item
@@ -899,7 +900,9 @@ to TODO when none are ticked, and to DOING otherwise"
 
 (setq sql-postgres-login-params nil)
 
-(add-hook! 'sql-mode-hook #'sql-indent-enable)
+(setq lsp-sqls-workspace-config-path nil)
+
+(add-hook! 'sql-mode-hook #'lsp)
 
 ;; Capitalize keywords in SQL mode
 (add-hook! 'sql-mode-hook #'sqlup-mode)
@@ -907,6 +910,25 @@ to TODO when none are ticked, and to DOING otherwise"
 (add-hook! 'sql-interactive-mode-hook #'sqlup-mode)
 ;; Set a global keyword to use sqlup on a region
 (global-set-key (kbd "C-c u") #'sqlup-capitalize-keywords-in-region)
+
+(defun indent-sql-buffer ()
+  "Since there's some bug that breaks the indentation ('sqlind-indent-line' specifically)
+when running it with 'newline-and-indent', I've resorted to this hack to run the indentation
+for the whole buffer when saving the file or running this manually."
+  (interactive)
+  (sqlind-minor-mode)
+  (indent-region (point-min) (point-max))
+  (setq sqlind-minor-mode nil)
+  (progn
+    (kill-local-variable 'indent-line-function)
+    (kill-local-variable 'align-mode-rules-list)))
+
+(map! :mode sql-mode
+      :n "ö" #'indent-sql-buffer)
+
+(defun indent-buffer ()
+  "Apply indentation rule to the entire buffer."
+  (indent-region (point-min) (point-max)))
 
 ;; Prettier
 
