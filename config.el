@@ -5,11 +5,45 @@
 (setq user-full-name "Tuomo Virolainen"
       user-mail-address "tuomo.virolainen@siili.com")
 
-;; Appearance
+;; appearance
 
-(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
+(defvar required-fonts '("Martian Mono" "Overpass" "JuliaMono"))
+
+(defvar available-fonts
+  (delete-dups (or (font-family-list)
+                   (split-string (shell-command-to-string "fc-list : family")
+                                 "[,\n]"))))
+
+(defvar missing-fonts
+  (delq nil (mapcar
+             (lambda (font)
+               (unless (delq nil (mapcar (lambda (f)
+                                           (string-match-p (format "^%s$" font) f))
+                                         available-fonts))
+                 font))
+             required-fonts)))
+
+(if missing-fonts
+    (pp-to-string
+     `(unless noninteractive
+        (add-hook! 'doom-init-ui-hook
+          (run-at-time nil nil
+                       (lambda ()
+                         (message "%s missing the following fonts: %s"
+                                  (propertize "Warning!" 'face '(bold warning))
+                                  (mapconcat (lambda (font)
+                                               (propertize font 'face 'font-lock-variable-name-face))
+                                             ',missing-fonts
+                                             ", "))
+                         (sleep-for 0.5))))))
+  ";; No missing fonts detected")
+
+;; Martian Mono, SF Mono and JetBrains Mono are the favourites.
+;; For future ideas: 'https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/'.
+(setq doom-font (font-spec :family "Martian Mono" :size 12 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
-      doom-unicode-font (font-spec :family "JuliaMono"))
+      doom-symbol-font (font-spec :family "JuliaMono"))
+
 
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
@@ -29,6 +63,21 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
+
+;; Adapted from 'tecosaur/emacs-config'
+
+(display-time-mode 1)
+
+(setq undo-limit 80000000
+      evil-want-fine-undo t
+      auto-save-default t
+      truncate-string-ellipsis "…"
+      password-cache-expiry nil
+      display-time-default-load-average nil)
+
+(global-subword-mode 1)
+
+(setq-default major-mode 'org-mode)
 
 ;; Show info about the file under editing, see: 'https://github.com/Artawower/file-info.el'
 (use-package file-info
@@ -57,8 +106,6 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
-
-(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
 (setq global-visual-line-mode t)
 (global-auto-revert-mode t)
@@ -218,6 +265,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Evil
 
+;; Default to global substitution.
+(setq evil-ex-substitute-global t)
+
+(setq doom-scratch-initial-major-mode 'org-mode)
+
 (setq evil-shift-width 2)
 
 (setq evil-undo-system 'undo-redo)
@@ -230,7 +282,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; When we overwrite text in visual mode, don’t add to the kill ring.
 (setq evil-kill-on-visual-paste nil)
 
-(setq evil-want-fine-undo nil)
+;; (setq evil-want-fine-undo nil)
 
 (use-package evil-owl
   :config
@@ -367,8 +419,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
             (lambda (orig &rest args)
               (shut-up (apply orig args))))
 
-(add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
-
 ;; Make indentation work with Compojure Api definitions
 ;; (lsp indentation can handle them out of the box).
 (after! cider
@@ -377,6 +427,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
    (GET 2)
    (PATCH 2)
    (PUT 2)))
+
+;; SPARQL
+
+(add-to-list 'auto-mode-alist '("\\.sparql\\'" . sparql-mode))
 
 ;; Python
 
@@ -456,6 +510,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (setq vterm-kill-buffer-on-exit t)
 
+(setq vterm-shell "/bin/zsh")
+
 ;; Marginalia
 
 (after! marginalia
@@ -514,7 +570,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (kill-buffer buffer)
     (elfeed-kill-buffer)))
 
-(add-hook! elfeed-search-mode #'elfeed-update)
+;; (add-hook! elfeed-search-mode #'elfeed-update)
 
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
@@ -780,6 +836,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                         ;; (visual-line-mode 1) ;; make the lines in the buffer wrap around the edges of the screen.
                         (+word-wrap-mode)
                         (+org-pretty-mode)
+                        (setq doom-modeline-enable-word-count t)
                         (org-indent-mode)))
 
 (global-set-key (kbd "C-c c") 'org-capture)
@@ -790,7 +847,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (setq-local jit-lock-defer-time 0.05
                 jit-lock-stealth-time 1)))
 
-(add-hook 'org-mode-hook #'locally-defer-font-lock)
+(add-hook! 'org-mode-hook #'locally-defer-font-lock)
 
 (after! org
   (global-org-modern-mode)
@@ -808,6 +865,34 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)" "DOING(g)" "|" "DONE(d)" "KILL(k)")
           (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
           (sequence "|" "OKAY(o)" "YES(y)" "NO(n)"))))
+
+;; These (as many other snippets) are from 'https://github.com/elken/doom'.
+
+(defun elken/org-archive-done-tasks ()
+  "Attempt to archive all done tasks in file"
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-archive-subtree)
+     (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+   "/DONE" 'file))
+
+(map! :map org-mode-map :desc "Archive tasks marked DONE" "C-c DEL a" #'elken/org-archive-done-tasks)
+
+(defun elken/org-remove-kill-tasks ()
+  (interactive)
+  (org-map-entries
+   (lambda ()
+     (org-cut-subtree)
+     (pop kill-ring)
+     (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
+   "/KILL" 'file))
+
+(map! :map org-mode-map :desc "Remove tasks marked as KILL" "C-c DEL k" #'elken/org-remove-kill-tasks)
+
+(setq org-archive-location "archive/Archive_%s::")
+
+(setq org-log-into-drawer t)
 
 ;; SOURCE: https://christiantietze.de/posts/2021/02/emacs-org-todo-doing-done-checkbox-cycling/
 (defun org-todo-if-needed (state)
@@ -902,7 +987,21 @@ to TODO when none are ticked, and to DOING otherwise"
 
 (setq lsp-sqls-workspace-config-path nil)
 
+(defun maybe-highlight-ms-sql-kws ()
+  "Highlight MS SQL keywords when it's certain that's the dialect we're
+working with."
+  (when (string-match "umaija" (buffer-file-name))
+    (message "Formatting...")
+    (sql-highlight-ms-keywords)))
+
 (add-hook! 'sql-mode-hook #'lsp)
+
+(add-hook! 'sql-mode-hook #'maybe-highlight-ms-sql-kws)
+
+(add-hook! 'sql-mode-hook #'sqlind-minor-mode)
+
+(add-hook! 'sql-mode-hook #'(lambda ()
+                              (+word-wrap-mode 1)))
 
 ;; Capitalize keywords in SQL mode
 (add-hook! 'sql-mode-hook #'sqlup-mode)
@@ -912,9 +1011,9 @@ to TODO when none are ticked, and to DOING otherwise"
 (global-set-key (kbd "C-c u") #'sqlup-capitalize-keywords-in-region)
 
 (defun indent-sql-buffer ()
-  "Since there's some bug that breaks the indentation ('sqlind-indent-line' specifically)
-when running it with 'newline-and-indent', I've resorted to this hack to run the indentation
-for the whole buffer when saving the file or running this manually."
+  "Since there's some bug that breaks the indentation (`sqlind-indent-line`
+specifically) when running it with `newline-and-indent`, I've resorted
+to this hack to run the indentation for the whole buffer."
   (interactive)
   (sqlind-minor-mode)
   (indent-region (point-min) (point-max))
@@ -923,12 +1022,8 @@ for the whole buffer when saving the file or running this manually."
     (kill-local-variable 'indent-line-function)
     (kill-local-variable 'align-mode-rules-list)))
 
-(map! :mode sql-mode
-      :n "ö" #'indent-sql-buffer)
-
-(defun indent-buffer ()
-  "Apply indentation rule to the entire buffer."
-  (indent-region (point-min) (point-max)))
+;; (map! :mode sql-mode
+;;       :n "ö" #'indent-sql-buffer)
 
 ;; Prettier
 

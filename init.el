@@ -20,7 +20,7 @@
        ;;layout
 
        :completion
-       company
+       (company +childframe)
        ;;helm
        ;;ido
        ;; ivy
@@ -47,7 +47,7 @@
        treemacs
        unicode
        (vc-gutter +pretty)
-       vi-tilde-fringe
+       ;; vi-tilde-fringe
        ;;window-select
        workspaces
        ;; zen
@@ -67,9 +67,9 @@
        word-wrap
 
        :emacs
-       dired
+       (dired +icons)
        electric
-       ibuffer
+       (ibuffer +icons)
        undo
        vc
 
@@ -80,9 +80,9 @@
        vterm
 
        :checkers
-       ;; syntax
-       ;;(spell +flyspell)
-       ;;grammar
+       syntax
+       ;; (spell +flyspell)
+       ;; grammar
 
        :tools
        ;;ansible
@@ -95,14 +95,15 @@
        ;;gist
        lookup
        lsp
-       magit
-       ;; make
-       ;; pass
+       (magit +forge)
+       make
+       pass
        pdf
        ;;prodigy
        rgb
        ;;taskrunner
        terraform
+       tree-sitter
        ;;tmux
        ;;upload
 
@@ -123,7 +124,7 @@
        ;;(dart +flutter)
        ;;elixir
        ;;elm
-       (emacs-lisp +tree-sitter +lsp)
+       emacs-lisp
        ;;erlang
        ;;ess
        ;;factor
@@ -148,7 +149,12 @@
        ;;nim
        ;;nix
        ;; ocaml
-       (org +roam2 +pretty +present +tree-sitter)
+       (org
+        +roam2
+        +pretty
+        +present
+        +tree-sitter
+        +dragndrop)
        ;; php
        ;;plantuml
        ;; purescript
@@ -159,10 +165,9 @@
        rest
        ;;rst
        ;;(ruby +rails)
-                                        ; (rust +lsp)
+       ;;(rust +lsp)
        ;;scala
        ;;(scheme +guile)
-       (sql +lsp +tree-sitter)
        (sh +lsp +tree-sitter)
        ;;sml
        ;;solidity
