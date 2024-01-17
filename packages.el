@@ -79,3 +79,4 @@
 (package! posframe)
 (package! browse-at-remote)
 (package! file-info :recipe (:host github :repo "Artawower/file-info.el"))
+(package! golden-ratio)

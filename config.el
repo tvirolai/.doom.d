@@ -5,45 +5,12 @@
 (setq user-full-name "Tuomo Virolainen"
       user-mail-address "tuomo.virolainen@siili.com")
 
-;; appearance
-
-(defvar required-fonts '("Martian Mono" "Overpass" "JuliaMono"))
-
-(defvar available-fonts
-  (delete-dups (or (font-family-list)
-                   (split-string (shell-command-to-string "fc-list : family")
-                                 "[,\n]"))))
-
-(defvar missing-fonts
-  (delq nil (mapcar
-             (lambda (font)
-               (unless (delq nil (mapcar (lambda (f)
-                                           (string-match-p (format "^%s$" font) f))
-                                         available-fonts))
-                 font))
-             required-fonts)))
-
-(if missing-fonts
-    (pp-to-string
-     `(unless noninteractive
-        (add-hook! 'doom-init-ui-hook
-          (run-at-time nil nil
-                       (lambda ()
-                         (message "%s missing the following fonts: %s"
-                                  (propertize "Warning!" 'face '(bold warning))
-                                  (mapconcat (lambda (font)
-                                               (propertize font 'face 'font-lock-variable-name-face))
-                                             ',missing-fonts
-                                             ", "))
-                         (sleep-for 0.5))))))
-  ";; No missing fonts detected")
-
+;; Appearance
 ;; Martian Mono, SF Mono and JetBrains Mono are the favourites.
 ;; For future ideas: 'https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/'.
 (setq doom-font (font-spec :family "Martian Mono" :size 12 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-symbol-font (font-spec :family "JuliaMono"))
-
 
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
@@ -64,8 +31,6 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
 
-;; Adapted from 'tecosaur/emacs-config'
-
 (display-time-mode 1)
 
 (setq undo-limit 80000000
@@ -77,7 +42,11 @@ Colours are substituted as per `fancy-splash-template-colours'.")
 
 (global-subword-mode 1)
 
-(setq-default major-mode 'org-mode)
+;; Make golden ratio's window resizing work with evil commands too
+(after! golden-ratio
+  (setq golden-ratio-extra-commands
+        (append golden-ratio-extra-commands
+                '(evil-window-down evil-window-up evil-window-left evil-window-right))))
 
 ;; Show info about the file under editing, see: 'https://github.com/Artawower/file-info.el'
 (use-package file-info
@@ -250,9 +219,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (add-hook! prog-mode #'company-mode)
 
 (after! company-mode
-  (setq company-idle-delay 0.1
+  (setq company-idle-delay 0.5
         company-minimum-prefix-length 2)
   (setq company-show-quick-access nil)
+  (setq company-show-numbers t)
   (add-hook 'evil-normal-state-entry-hook #'company-abort))
 
 ;; LSP
@@ -578,9 +548,39 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (after! elfeed-show-mode
   (set-evil-initial-state! 'elfeed-show-mode 'normal))
 
-(after! evil-snipe
-  (push 'elfeed-show-mode   evil-snipe-disabled-modes)
-  (push 'elfeed-search-mode evil-snipe-disabled-modes))
+(map! :map elfeed-search-mode-map
+      :after elfeed-search
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+      :n "q" #'elfeed-kill-buffers
+      :n "e" #'elfeed-update
+      :n "r" #'elfeed-search-untag-all-unread
+      :n "u" #'elfeed-search-tag-all-unread
+      :n "s" #'elfeed-search-live-filter
+      :n "RET" #'elfeed-search-show-entry
+      :n "+" #'elfeed-search-tag-all
+      :n "-" #'elfeed-search-untag-all
+      :n "S" #'elfeed-search-set-filter
+      :n "b" #'elfeed-search-browse-url
+      :n "y" #'elfeed-search-yank)
+
+(map! :map elfeed-show-mode-map
+      :after elfeed-show
+      [remap kill-this-buffer] "q"
+      [remap kill-buffer] "q"
+      :n doom-leader-key nil
+
+      :nm "q" #'+rss/delete-pane
+      :nm "o" #'ace-link-elfeed
+      :nm "RET" #'org-ref-elfeed-add
+      :nm "n" #'elfeed-show-next
+      :nm "N" #'elfeed-show-prev
+      :nm "p" #'elfeed-show-prev
+      :nm "+" #'elfeed-show-tag
+      :nm "-" #'elfeed-show-untag
+      :nm "s" #'elfeed-show-new-live-search
+      :nm "y" #'elfeed-show-yank)
 
 (after! elfeed
   (elfeed-org)
@@ -606,40 +606,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (set-face-attribute 'elfeed-search-title-face nil
                       :foreground 'nil
                       :weight 'light)
-
-  (map! :map elfeed-search-mode-map
-        :after elfeed-search
-        [remap kill-this-buffer] "q"
-        [remap kill-buffer] "q"
-        :n doom-leader-key nil
-        :n "q" #'elfeed-kill-buffers
-        :n "e" #'elfeed-update
-        :n "r" #'elfeed-search-untag-all-unread
-        :n "u" #'elfeed-search-tag-all-unread
-        :n "s" #'elfeed-search-live-filter
-        :n "RET" #'elfeed-search-show-entry
-        :n "+" #'elfeed-search-tag-all
-        :n "-" #'elfeed-search-untag-all
-        :n "S" #'elfeed-search-set-filter
-        :n "b" #'elfeed-search-browse-url
-        :n "y" #'elfeed-search-yank)
-
-  (map! :map elfeed-show-mode-map
-        :after elfeed-show
-        [remap kill-this-buffer] "q"
-        [remap kill-buffer] "q"
-        :n doom-leader-key nil
-
-        :nm "q" #'+rss/delete-pane
-        :nm "o" #'ace-link-elfeed
-        :nm "RET" #'org-ref-elfeed-add
-        :nm "n" #'elfeed-show-next
-        :nm "N" #'elfeed-show-prev
-        :nm "p" #'elfeed-show-prev
-        :nm "+" #'elfeed-show-tag
-        :nm "-" #'elfeed-show-untag
-        :nm "s" #'elfeed-show-new-live-search
-        :nm "y" #'elfeed-show-yank)
 
   (defadvice! +rss-elfeed-wrap-h-nicer ()
     "Enhances an elfeed entry's readability by wrapping it to a width of
@@ -725,13 +691,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (insert (propertize "(empty)\n" 'face 'italic)))
       (goto-char (point-min)))))
 
+
+
 ;; Common Lisp settings
 
 (use-package! slime
-  :defer t ; don't load the package immediately
-  :init ; runs this immediately
+  :defer t                              ; don't load the package immediately
+  :init                                 ; runs this immediately
   (setq inferior-lisp-program "sbcl")
-  :config ; runs this when slime loads
+  :config                               ; runs this when slime loads
   (set-repl-handler! 'lisp-mode #'sly-mrepl)
   (set-eval-handler! 'lisp-mode #'sly-eval-region)
   (set-lookup-handlers! 'lisp-mode

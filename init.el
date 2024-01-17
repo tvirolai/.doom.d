@@ -42,6 +42,9 @@
        nav-flash
        ;; neotree
        ophints
+       (popup                       ; tame sudden yet inevitable temporary windows
+        +all                        ; catch all popups that start with an asterix
+        +defaults)                  ; default popup rules
        ;; (popup +defaults)
        ;;tabs
        treemacs
@@ -153,8 +156,7 @@
         +roam2
         +pretty
         +present
-        +tree-sitter
-        +dragndrop)
+        +tree-sitter)
        ;; php
        ;;plantuml
        ;; purescript
