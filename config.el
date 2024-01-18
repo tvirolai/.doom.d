@@ -17,11 +17,8 @@
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
 
-(defvar fancy-splash-image-directory
-  (expand-file-name "images/" doom-user-dir)
-  "Directory in which to look for splash image templates.")
-
-(setq fancy-splash-image (expand-file-name "emacs-e-template.svg" fancy-splash-image-directory))
+(setq fancy-splash-image (expand-file-name "emacs-e-template.svg"
+                                           (expand-file-name "images/" doom-user-dir)))
 
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
