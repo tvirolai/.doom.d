@@ -313,6 +313,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       :g "C-k" #'evil-window-up
       :g "C-l" #'evil-window-right)
 
+;; Treat Emacs symbol as word in Evil mode
+
+(with-eval-after-load 'evil
+  (defalias #'forward-evil-word #'forward-evil-symbol)
+  ;; make evil-search-word look for symbol rather than word boundaries
+  (setq-default evil-symbol-word-search t))
+
 ;; Clojure settings
 
 (map! :mode clojure-mode
@@ -800,10 +807,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (visual-fill-column-center-text t)
   :hook (org-mode . visual-fill-column-mode))
 
+(add-hook! 'olivetti-mode-hook #'(lambda ()
+                                   (setq visual-line-mode nil)
+                                   (visual-fill-column-mode--disable)))
+
 (add-hook! org-mode #'(lambda ()
                         ;; (visual-line-mode 1) ;; make the lines in the buffer wrap around the edges of the screen.
                         (+word-wrap-mode)
                         (+org-pretty-mode)
+                        (spacious-padding-mode 1)
                         (setq doom-modeline-enable-word-count t)
                         (org-indent-mode)))
 
@@ -995,10 +1007,14 @@ to this hack to run the indentation for the whole buffer."
   (indent-sql-buffer)
   (sqlup-capitalize-keywords-in-region (point-min) (point-max)))
 
-;; TODO: Check that the buffer is not too large before running the format
-;; function.
+;; Trying to format huge buffers can freeze Emacs, so the buffer size
+;; is check before doing it. The limit is picked pretty arbitrarily.
 (map! :mode sql-mode
-      :n "ö" #'format-sql-buffer)
+      :n "ö" #'(lambda ()
+                 (interactive)
+                 (when (< (buffer-size) 40000)
+                   (format-sql-buffer))
+                 (save-buffer)))
 
 ;; Prettier
 
@@ -1036,6 +1052,8 @@ to this hack to run the indentation for the whole buffer."
                       #'kill-magit-diff-buffer-in-current-repo
                       nil t)))
 
+(setq forge-owned-accounts '(("tvirolai")))
+
 (with-eval-after-load 'magit
   (defun mu-magit-kill-buffers ()
     "Restore window configuration and kill all Magit buffers."
@@ -1044,13 +1062,6 @@ to this hack to run the indentation for the whole buffer."
       (magit-restore-window-configuration)
       (mapc #'kill-buffer buffers)))
   (bind-key "q" #'mu-magit-kill-buffers magit-status-mode-map))
-
-;; Treat Emacs symbol as word in Evil mode
-
-(with-eval-after-load 'evil
-  (defalias #'forward-evil-word #'forward-evil-symbol)
-  ;; make evil-search-word look for symbol rather than word boundaries
-  (setq-default evil-symbol-word-search t))
 
 ;; https://zck.org/balance-emacs-windows
 (seq-doseq (fn (list #'split-window #'delete-window))
