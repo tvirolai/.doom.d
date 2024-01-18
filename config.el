@@ -512,7 +512,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (propertize (marginalia--time time) 'face (list :foreground color))))
 
   (defun +marginalia-file-size-colorful (size)
-    (let* ((size-index (/ (log10 (+ 1 size)) 7.0))
+    (let* ((size-index (/ (log (+ 1 size)) 7.0))
            (color (if (< size-index 10000000) ; 10m
                       (doom-blend 'orange 'green size-index)
                     (doom-blend 'red 'orange (- size-index 1)))))
@@ -540,7 +540,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (kill-buffer buffer)
     (elfeed-kill-buffer)))
 
-;; (add-hook! elfeed-search-mode #'elfeed-update)
+(add-hook! elfeed-search-mode #'elfeed-update)
 
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
@@ -990,8 +990,15 @@ to this hack to run the indentation for the whole buffer."
     (kill-local-variable 'indent-line-function)
     (kill-local-variable 'align-mode-rules-list)))
 
-;; (map! :mode sql-mode
-;;       :n "ö" #'indent-sql-buffer)
+(defun format-sql-buffer ()
+  (interactive)
+  (indent-sql-buffer)
+  (sqlup-capitalize-keywords-in-region (point-min) (point-max)))
+
+;; TODO: Check that the buffer is not too large before running the format
+;; function.
+(map! :mode sql-mode
+      :n "ö" #'format-sql-buffer)
 
 ;; Prettier
 
