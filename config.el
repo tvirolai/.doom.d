@@ -12,6 +12,8 @@
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-symbol-font (font-spec :family "JuliaMono"))
 
+(setq doom-theme 'doom-dracula)
+
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
 
@@ -19,19 +21,13 @@
   (expand-file-name "images/" doom-user-dir)
   "Directory in which to look for splash image templates.")
 
-(defvar fancy-splash-image-template
-  (expand-file-name "emacs-e-template.svg" fancy-splash-image-directory)
-  "Default template svg used for the splash image.
-Colours are substituted as per `fancy-splash-template-colours'.")
-
 (setq fancy-splash-image (expand-file-name "emacs-e-template.svg" fancy-splash-image-directory))
-
-(setq doom-theme 'doom-dracula)
 
 (when (version< "29.0.50" emacs-version)
   (pixel-scroll-precision-mode))
 
 (display-time-mode 1)
+(global-subword-mode 1)
 
 (setq undo-limit 80000000
       evil-want-fine-undo t
@@ -39,8 +35,6 @@ Colours are substituted as per `fancy-splash-template-colours'.")
       truncate-string-ellipsis "…"
       password-cache-expiry nil
       display-time-default-load-average nil)
-
-(global-subword-mode 1)
 
 ;; Make golden ratio's window resizing work with evil commands too
 (after! golden-ratio
@@ -238,16 +232,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Default to global substitution.
 (setq evil-ex-substitute-global t)
 
-(setq doom-scratch-initial-major-mode 'org-mode)
-
 (setq evil-shift-width 2)
 
 (setq evil-undo-system 'undo-redo)
 
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
-
-(setq evil-ex-substitute-global t)
 
 ;; When we overwrite text in visual mode, don’t add to the kill ring.
 (setq evil-kill-on-visual-paste nil)
@@ -455,6 +445,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; Terminal
 
+(setq vterm-shell "/bin/zsh")
+
 (after! eshell-mode
   (define-key eshell-mode-map (kbd "C-l") #'evil-window-right))
 
@@ -465,9 +457,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :after vterm
   :config (add-hook 'vterm-mode-hook
                     (lambda ()
-                      (evil-insert-state)
-                      ;; (evil-emacs-state)
-                      ))
+                      (evil-insert-state)))
 
   (setq vterm-max-scrollback 100000)
   (setq vterm-keymap-exceptions nil)
@@ -486,8 +476,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         :n "<return>" #'evil-insert-resume))
 
 (setq vterm-kill-buffer-on-exit t)
-
-(setq vterm-shell "/bin/zsh")
 
 ;; Marginalia
 
@@ -1008,7 +996,7 @@ to this hack to run the indentation for the whole buffer."
   (sqlup-capitalize-keywords-in-region (point-min) (point-max)))
 
 ;; Trying to format huge buffers can freeze Emacs, so the buffer size
-;; is check before doing it. The limit is picked pretty arbitrarily.
+;; is checked before doing it. The limit is picked pretty arbitrarily.
 (map! :mode sql-mode
       :n "ö" #'(lambda ()
                  (interactive)
