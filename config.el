@@ -8,14 +8,14 @@
 ;; Appearance
 ;; Martian Mono, SF Mono and JetBrains Mono are the favourites.
 ;; For future ideas: 'https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/'.
-(setq doom-font (font-spec :family "Martian Mono" :size 12 :weight 'regular)
+(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-symbol-font (font-spec :family "JuliaMono"))
 
 (setq doom-theme 'doom-dracula)
 
-(custom-set-faces!
-  '(doom-modeline-buffer-modified :foreground "orange"))
+;; (custom-set-faces!
+;;   '(doom-modeline-buffer-modified :foreground "orange"))
 
 (setq fancy-splash-image (expand-file-name "emacs-e-template.svg"
                                            (expand-file-name "images/" doom-user-dir)))
@@ -253,7 +253,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (evil-owl-mode))
 
 (map! :g "C-s" #'save-buffer)
-(map! :after evil :gnvi "C-å" #'consult-line)
 
 (map! :map dired-mode-map
       :n "h" #'dired-up-directory
@@ -274,16 +273,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       :gnvi "C-h" #'evil-window-left
 
       :n "C-u" #'evil-scroll-up
-      :n "C-ö" #'split-window-below
+      :gnvi "C-ö" #'split-window-below
+      :gnvi "C-ä" #'split-window-right
+      :gnvi "C-å" #'consult-line
       :n "Ö" #'xref-find-definitions
       :n "ä" #'delete-other-windows
-      :n "C-ä" #'split-window-right
       :n "ö" #'save-buffer
       :n "Ä" #'+vertico/project-search
       :n "å" #'yank-from-kill-ring
       :n "¨" #'evil-ex-search-forward
       :n "Q" #'kill-buffer-and-window
       :n "SPC z" #'recentf-open-files
+      :gnvi "C-'" #'+popup/raise
       :n "C--" nil
       :gnvi "C-M--" #'ibuffer)
 
