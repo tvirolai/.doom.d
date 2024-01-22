@@ -14,8 +14,8 @@
 
 (setq doom-theme 'doom-dracula)
 
-;; (custom-set-faces!
-;;   '(doom-modeline-buffer-modified :foreground "orange"))
+(custom-set-faces!
+  '(doom-modeline-buffer-modified :foreground "orange"))
 
 (setq fancy-splash-image (expand-file-name "emacs-e-template.svg"
                                            (expand-file-name "images/" doom-user-dir)))
