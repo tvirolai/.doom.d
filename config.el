@@ -20,8 +20,7 @@
 (setq fancy-splash-image (expand-file-name "emacs-e-template.svg"
                                            (expand-file-name "images/" doom-user-dir)))
 
-(when (version< "29.0.50" emacs-version)
-  (pixel-scroll-precision-mode))
+(pixel-scroll-precision-mode)
 
 (display-time-mode 1)
 (global-subword-mode 1)
@@ -32,12 +31,6 @@
       truncate-string-ellipsis "…"
       password-cache-expiry nil
       display-time-default-load-average nil)
-
-;; Make golden ratio's window resizing work with evil commands too
-(after! golden-ratio
-  (setq golden-ratio-extra-commands
-        (append golden-ratio-extra-commands
-                '(evil-window-down evil-window-up evil-window-left evil-window-right))))
 
 ;; Show info about the file under editing, see: 'https://github.com/Artawower/file-info.el'
 (use-package file-info
@@ -834,7 +827,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;; These (as many other snippets) are from 'https://github.com/elken/doom'.
 
-(defun elken/org-archive-done-tasks ()
+(defun org-archive-done-tasks ()
   "Attempt to archive all done tasks in file"
   (interactive)
   (org-map-entries
@@ -843,9 +836,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
      (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
    "/DONE" 'file))
 
-(map! :map org-mode-map :desc "Archive tasks marked DONE" "C-c DEL a" #'elken/org-archive-done-tasks)
+(map! :map org-mode-map :desc "Archive tasks marked DONE" "C-c DEL a" #'org-archive-done-tasks)
 
-(defun elken/org-remove-kill-tasks ()
+(defun org-remove-kill-tasks ()
   (interactive)
   (org-map-entries
    (lambda ()
@@ -854,7 +847,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
      (setq org-map-continue-from (org-element-property :begin (org-element-at-point))))
    "/KILL" 'file))
 
-(map! :map org-mode-map :desc "Remove tasks marked as KILL" "C-c DEL k" #'elken/org-remove-kill-tasks)
+(map! :map org-mode-map :desc "Remove tasks marked as KILL" "C-c DEL k" #'org-remove-kill-tasks)
 
 (setq org-archive-location "archive/Archive_%s::")
 
