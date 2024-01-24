@@ -21,6 +21,8 @@
 
        :completion
        (company +childframe)
+       ;; (corfu +icons
+       ;;        +orderless)
        ;;helm
        ;;ido
        ;; ivy
@@ -42,10 +44,9 @@
        nav-flash
        ;; neotree
        ophints
-       (popup                       ; tame sudden yet inevitable temporary windows
-        +all                        ; catch all popups that start with an asterix
-        +defaults)                  ; default popup rules
-       ;; (popup +defaults)
+       (popup
+        +all
+        +defaults)
        ;;tabs
        treemacs
        unicode

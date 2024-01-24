@@ -8,7 +8,7 @@
 ;; Appearance
 ;; Martian Mono, SF Mono and JetBrains Mono are the favourites.
 ;; For future ideas: 'https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/'.
-(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
+(setq doom-font (font-spec :family "Martian Mono" :size 13 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-symbol-font (font-spec :family "JuliaMono"))
 
@@ -247,10 +247,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (map! :g "C-s" #'save-buffer)
 
-(map! :map dired-mode-map
-      :n "h" #'dired-up-directory
-      :n "l" #'dired-find-alternate-file)
-
 (define-key evil-normal-state-map [escape] 'keyboard-quit)
 (define-key evil-visual-state-map [escape] 'keyboard-quit)
 (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
@@ -394,8 +390,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (add-hook! 'python-ts-mode-hook #'lsp)
 (add-hook! 'python-ts-mode-hook #'python-black-on-save-mode)
+(add-hook! 'python-ts-mode-hook #'lsp-completion--enable)
 
 (setq lsp-pylsp-plugins-flake8-max-line-length 120)
+
+(map! :map python-ts-mode-map
+      :n "§" #'projectile-test-project)
 
 ;; Bash
 
