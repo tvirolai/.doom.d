@@ -6,15 +6,14 @@
       user-mail-address "tuomo.virolainen@siili.com")
 
 ;; Appearance
+
 ;; Martian Mono, SF Mono and JetBrains Mono are the favourites.
 ;; For future ideas: 'https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/'.
-(setq doom-font (font-spec :family "Martian Mono" :size 13 :weight 'regular)
+(setq doom-font (font-spec :family "SF Mono" :size 12 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-symbol-font (font-spec :family "JuliaMono"))
 
 (setq doom-theme 'doom-dracula)
-
-(vertico-posframe-mode 1)
 
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
@@ -23,7 +22,6 @@
                                            (expand-file-name "images/" doom-user-dir)))
 
 (pixel-scroll-precision-mode)
-
 (display-time-mode 1)
 (global-subword-mode 1)
 
@@ -37,20 +35,11 @@
 ;; Show info about the file under editing, see: 'https://github.com/Artawower/file-info.el'
 (use-package file-info
   :ensure t
-  :bind (("C-c d" . 'file-info-show))
-  :config
-  (setq hydra-hint-display-type 'posframe)
-  (setq hydra-posframe-show-params `(:poshandler posframe-poshandler-frame-center
-                                     :internal-border-width 2
-                                     :internal-border-color "#61AFEF"
-                                     :left-fringe 16
-                                     :right-fringe 16)))
+  :bind (("C-c d" . 'file-info-show)))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
-
-(setq projectile-enable-caching nil)
 
 ;; General settings
 
@@ -83,8 +72,6 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Dropbox/org")
-
-(setq projectile-project-search-path '("~/dev"))
 
 (setq mac-option-modifier 'nil
       mac-command-modifier 'meta
@@ -156,22 +143,6 @@
   (interactive)
   (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist)))
 
-;; https://merrick.luois.me/posts/better-tsx-support-in-doom-emacs
-;; (use-package! typescript-mode
-;;   :mode ("\\.tsx\\'" . typescript-tsx-tree-sitter-mode)
-;;   :config
-;;   (setq typescript-indent-level 2)
-
-;;   (define-derived-mode typescript-tsx-tree-sitter-mode typescript-mode "TypeScript TSX"
-;;     (setq-local indent-line-function 'rjsx-indent-line))
-
-;;   (add-hook! 'typescript-tsx-tree-sitter-mode-local-vars-hook
-;;              #'+javascript-init-lsp-or-tide-maybe-h
-;;              #'rjsx-minor-mode)
-;;   (map! :map typescript-tsx-tree-sitter-mode-map
-;;         "<" 'rjsx-electric-lt
-;;         ">" 'rjsx-electric-gt))
-
 (after! tree-sitter
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-tree-sitter-mode . tsx)))
 
@@ -210,6 +181,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (setq company-show-quick-access nil)
   (setq company-show-numbers t)
   (add-hook 'evil-normal-state-entry-hook #'company-abort))
+
+;; Projectile
+
+(setq projectile-enable-caching nil)
+(setq projectile-project-search-path '("~/dev"))
 
 ;; LSP
 
@@ -319,15 +295,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
           (t (concat ns "-test")))))
 
 (setq cider-test-infer-test-ns #'cider-custom-test-ns-fn)
-
-;; (with-eval-after-load 'clojurescript-ts-mode
-;;   (add-to-list 'lsp-language-id-configuration '(clojurescript-ts-mode . "clojurescript")))
-
-;; (with-eval-after-load 'clojure-mode
-;;   (add-hook 'clojure-ts-mode-hook #'cider-mode)
-;;   (add-hook 'clojure-ts-mode-hook #'clojure-mode-variables)
-;;   (setq clojure-ts-mode-map clojure-mode-map)
-;;   (setq clojurescript-ts-mode-map clojurescript-mode-map))
 
 (defun initialize-kondo ()
   (dolist (checker '(clj-kondo-clj clj-kondo-cljs clj-kondo-cljc clj-kondo-edn))
@@ -679,8 +646,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (insert (propertize "(empty)\n" 'face 'italic)))
       (goto-char (point-min)))))
 
-
-
 ;; Common Lisp settings
 
 (use-package! slime
@@ -952,15 +917,11 @@ to TODO when none are ticked, and to DOING otherwise"
   "Highlight MS SQL keywords when it's certain that's the dialect we're
 working with."
   (when (string-match "umaija" (buffer-file-name))
-    (message "Formatting...")
     (sql-highlight-ms-keywords)))
 
 (add-hook! 'sql-mode-hook #'lsp)
-
 (add-hook! 'sql-mode-hook #'maybe-highlight-ms-sql-kws)
-
 (add-hook! 'sql-mode-hook #'sqlind-minor-mode)
-
 (add-hook! 'sql-mode-hook #'(lambda ()
                               (+word-wrap-mode 1)))
 
