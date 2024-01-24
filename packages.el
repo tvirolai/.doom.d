@@ -81,3 +81,4 @@
 (package! file-info :recipe (:host github :repo "Artawower/file-info.el"))
 (package! spacious-padding)
 (package! olivetti)
+(package! vertico-posframe)

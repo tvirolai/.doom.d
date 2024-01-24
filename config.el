@@ -14,6 +14,8 @@
 
 (setq doom-theme 'doom-dracula)
 
+(vertico-posframe-mode 1)
+
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
 
