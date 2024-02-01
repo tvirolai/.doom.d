@@ -9,7 +9,7 @@
 
 ;; Martian Mono, SF Mono and JetBrains Mono are the favourites.
 ;; For future ideas: 'https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/'.
-(setq doom-font (font-spec :family "SF Mono" :size 12 :weight 'regular)
+(setq doom-font (font-spec :family "SF Mono" :size 13 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 14)
       doom-symbol-font (font-spec :family "JuliaMono"))
 
