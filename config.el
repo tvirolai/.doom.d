@@ -883,10 +883,9 @@ to TODO when none are ticked, and to DOING otherwise"
 
 (setq org-use-property-inheritance t)
 
-(setq org-roam-completion-everywhere t)
-
 (after! org-roam
   (org-roam-db-sync)
+  (setq org-roam-completion-everywhere t)
   (setq org-roam-capture-templates
         `(("n" "default note" plain "%?"
            :if-new
